@@ -50,7 +50,8 @@ define({
             ifWantsToBe,
             upgrade,
             intro: 'intro',
-            finale: 'finale'
+            finale: 'finale',
+            virtualProps: ['xslt']
         }
     },
     complexPropDefaults: {
