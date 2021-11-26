@@ -5,15 +5,16 @@ export class BeFerriedController {
     intro(proxy, target, beDecor) {
         target.addEventListener('slotchange', this.handleSlotChange);
         this.#target = target;
-        this.transform();
     }
     finale(proxy, target, beDecor) {
         this.#target.removeEventListener('slotchange', this.handleSlotChange);
     }
     handleSlotChange = (e) => {
-        this.transform();
+        this.transform(this);
     };
-    async transform() {
+    async transform({ isC }) {
+        if (!isC)
+            return;
         this.#target.classList.add('being-ferried');
         let xsltProcessor;
         if (this.xslt !== undefined) {
@@ -51,7 +52,15 @@ define({
             upgrade,
             intro: 'intro',
             finale: 'finale',
-            virtualProps: ['xslt']
+            virtualProps: ['xslt', 'isC'],
+            proxyPropDefaults: {
+                isC: true,
+            }
+        },
+        actions: {
+            transform: {
+                ifAllOf: ['isC']
+            }
         }
     },
     complexPropDefaults: {

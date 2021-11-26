@@ -7,15 +7,15 @@ export class BeFerriedController implements BeFerriedActions{
     intro(proxy: HTMLSlotElement & BeFerriedVirtualProps, target: HTMLSlotElement, beDecor: BeDecoratedProps){
         target.addEventListener('slotchange', this.handleSlotChange);
         this.#target = target;
-        this.transform();
     }
     finale(proxy: HTMLSlotElement & BeFerriedVirtualProps, target: HTMLSlotElement, beDecor: BeDecoratedProps){
         this.#target.removeEventListener('slotchange', this.handleSlotChange);
     }
     handleSlotChange = (e: Event) => {
-        this.transform();
+        this.transform(this);
     }
-    async transform(){
+    async transform({isC}: this){
+        if(!isC) return;
         this.#target.classList.add('being-ferried');
         let xsltProcessor: XSLTProcessor | undefined;
         if(this.xslt !== undefined){
@@ -62,7 +62,15 @@ define<BeFerriedProps & BeDecoratedProps<BeFerriedProps, BeFerriedActions>, BeFe
             upgrade,
             intro: 'intro',
             finale: 'finale',
-            virtualProps: ['xslt']
+            virtualProps: ['xslt', 'isC'],
+            proxyPropDefaults:{
+                isC: true,
+            }
+        },
+        actions:{
+            transform: {
+                ifAllOf: ['isC']
+            }
         }
     },
     complexPropDefaults:{
