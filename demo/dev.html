@@ -18,7 +18,10 @@
     </form>
     <div -innerHTML>
         <template shadowroot=open>
-            <slot be-ferried></slot>
+            <slot be-ferried='{
+                "xslt": "transform.xslt"
+            }'></slot>
+            <div></div>
             <be-hive></be-hive>
         </template>
     </div>

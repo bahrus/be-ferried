@@ -1,5 +1,5 @@
 import {define, BeDecoratedProps} from 'be-decorated/be-decorated.js';
-import {BeFerriedVirtualProps, BeFerriedActions, BeFerriedProps} from './types';
+import {BeFerriedActions, BeFerriedProps} from './types';
 import {register} from 'be-hive/register.js';
 
 export class BeFerriedController implements BeFerriedActions{
@@ -26,15 +26,20 @@ export class BeFerriedController implements BeFerriedActions{
         const ns = this.#target.nextElementSibling as HTMLElement;
         ns.innerHTML = ''; 
         const fragment = document.createDocumentFragment();
+        const div = document.createElement('div');
+        fragment.appendChild(div);
+        let nonTrivial = false;
         this.#target.assignedNodes().forEach(el => {
 
             switch(el.nodeType){
                 case 1:
+                    nonTrivial = true;
                     const clone = el.cloneNode(true);
-                    fragment.appendChild(clone);
+                    div.appendChild(clone);
                     break;
             }
         });
+        if(!nonTrivial) return;
         let resultDocument: DocumentFragment = fragment as DocumentFragment;
         if(xsltProcessor !== undefined){
             resultDocument = xsltProcessor.transformToFragment(fragment, document);

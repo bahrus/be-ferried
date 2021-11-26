@@ -25,14 +25,20 @@ export class BeFerriedController {
         const ns = this.#target.nextElementSibling;
         ns.innerHTML = '';
         const fragment = document.createDocumentFragment();
+        const div = document.createElement('div');
+        fragment.appendChild(div);
+        let nonTrivial = false;
         this.#target.assignedNodes().forEach(el => {
             switch (el.nodeType) {
                 case 1:
+                    nonTrivial = true;
                     const clone = el.cloneNode(true);
-                    fragment.appendChild(clone);
+                    div.appendChild(clone);
                     break;
             }
         });
+        if (!nonTrivial)
+            return;
         let resultDocument = fragment;
         if (xsltProcessor !== undefined) {
             resultDocument = xsltProcessor.transformToFragment(fragment, document);
