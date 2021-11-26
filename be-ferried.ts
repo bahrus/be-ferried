@@ -1,5 +1,6 @@
 import {define, BeDecoratedProps} from 'be-decorated/be-decorated.js';
-import {BeFerriedActions, BeFerriedProps} from './types';
+import {BeFerriedActions, BeFerriedProps, BeFerriedVirtualProps} from './types';
+import {hookUp} from 'be-observant/hookUp.js';
 import {register} from 'be-hive/register.js';
 
 export class BeFerriedController implements BeFerriedActions{
@@ -12,16 +13,21 @@ export class BeFerriedController implements BeFerriedActions{
         this.#target.removeEventListener('slotchange', this.handleSlotChange);
     }
     handleSlotChange = (e: Event) => {
-        this.transform(this);
+        this.proxy.slotChangeCount++;
+        //this.transform(this);
     }
-    async transform({isC}: this){
-        if(!isC) return;
+
+    onXSLT({xslt, proxy}: this){
+        hookUp(xslt, proxy, 'xsltHref');    
+    }
+
+    async transform({xsltHref}: this){
         this.#target.classList.add('being-ferried');
         let xsltProcessor: XSLTProcessor | undefined;
         if(this.xslt !== undefined){
             const xslt = await fetch(this.xslt).then(r => r.text());
             xsltProcessor = new XSLTProcessor();
-            xsltProcessor.importStylesheet(new DOMParser().parseFromString(xslt, 'text/xml'));
+            xsltProcessor.importStylesheet(new DOMParser().parseFromString(xsltHref, 'text/xml'));
         }
         const ns = this.#target.nextElementSibling as HTMLElement;
         ns.innerHTML = ''; 
@@ -67,14 +73,19 @@ define<BeFerriedProps & BeDecoratedProps<BeFerriedProps, BeFerriedActions>, BeFe
             upgrade,
             intro: 'intro',
             finale: 'finale',
-            virtualProps: ['xslt', 'isC'],
+            virtualProps: ['xslt', 'isC', 'xsltHref'],
             proxyPropDefaults:{
                 isC: true,
+                slotChangeCount: 0,
             }
         },
         actions:{
+            onXSLT: {
+                ifAllOf: ['xslt'],
+            },
             transform: {
-                ifAllOf: ['isC']
+                ifAllOf: ['isC', 'xsltHref'],
+                ifKeyIn: ['slotChangeCount']
             }
         }
     },

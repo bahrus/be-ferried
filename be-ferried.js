@@ -1,4 +1,5 @@
 import { define } from 'be-decorated/be-decorated.js';
+import { hookUp } from 'be-observant/hookUp.js';
 import { register } from 'be-hive/register.js';
 export class BeFerriedController {
     #target;
@@ -10,17 +11,19 @@ export class BeFerriedController {
         this.#target.removeEventListener('slotchange', this.handleSlotChange);
     }
     handleSlotChange = (e) => {
-        this.transform(this);
+        this.proxy.slotChangeCount++;
+        //this.transform(this);
     };
-    async transform({ isC }) {
-        if (!isC)
-            return;
+    onXSLT({ xslt, proxy }) {
+        hookUp(xslt, proxy, 'xsltHref');
+    }
+    async transform({ xsltHref }) {
         this.#target.classList.add('being-ferried');
         let xsltProcessor;
         if (this.xslt !== undefined) {
             const xslt = await fetch(this.xslt).then(r => r.text());
             xsltProcessor = new XSLTProcessor();
-            xsltProcessor.importStylesheet(new DOMParser().parseFromString(xslt, 'text/xml'));
+            xsltProcessor.importStylesheet(new DOMParser().parseFromString(xsltHref, 'text/xml'));
         }
         const ns = this.#target.nextElementSibling;
         ns.innerHTML = '';
@@ -58,14 +61,19 @@ define({
             upgrade,
             intro: 'intro',
             finale: 'finale',
-            virtualProps: ['xslt', 'isC'],
+            virtualProps: ['xslt', 'isC', 'xsltHref'],
             proxyPropDefaults: {
                 isC: true,
+                slotChangeCount: 0,
             }
         },
         actions: {
+            onXSLT: {
+                ifAllOf: ['xslt'],
+            },
             transform: {
-                ifAllOf: ['isC']
+                ifAllOf: ['isC', 'xsltHref'],
+                ifKeyIn: ['slotChangeCount']
             }
         }
     },
