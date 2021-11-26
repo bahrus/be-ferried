@@ -1,7 +1,7 @@
 import {BeDecoratedProps} from 'be-decorated/types';
 
 export interface BeFerriedVirtualProps{
-
+    xslt: string;
 }
 
 export interface BeFerriedProps extends BeFerriedVirtualProps{
@@ -9,5 +9,6 @@ export interface BeFerriedProps extends BeFerriedVirtualProps{
 }
 
 export interface BeFerriedActions{
-    
+    intro(proxy: HTMLSlotElement & BeFerriedVirtualProps, target: HTMLSlotElement, beDecor: BeDecoratedProps): void;
+    finale(proxy: HTMLSlotElement & BeFerriedVirtualProps, target: HTMLSlotElement, beDecor: BeDecoratedProps): void;
 }
