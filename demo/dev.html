@@ -18,6 +18,11 @@
     </form>
     <div -innerHTML>
         <template shadowroot=open>
+            <style>
+                slot[is-ferried]{
+                    display: none;
+                }
+            </style>
             <slot be-ferried='{
                 "xslt": "transform.xslt"
             }'></slot>
