@@ -7,11 +7,15 @@ export class BeFerriedController implements BeFerriedActions{
     intro(proxy: HTMLSlotElement & BeFerriedVirtualProps, target: HTMLSlotElement, beDecor: BeDecoratedProps){
         target.addEventListener('slotchange', this.handleSlotChange);
         this.#target = target;
+        this.transform();
     }
     finale(proxy: HTMLSlotElement & BeFerriedVirtualProps, target: HTMLSlotElement, beDecor: BeDecoratedProps){
         this.#target.removeEventListener('slotchange', this.handleSlotChange);
     }
-    handleSlotChange = async (e: Event) => {
+    handleSlotChange = (e: Event) => {
+        this.transform();
+    }
+    async transform(){
         this.#target.classList.add('being-ferried');
         let xsltProcessor: XSLTProcessor | undefined;
         if(this.xslt !== undefined){
@@ -20,19 +24,23 @@ export class BeFerriedController implements BeFerriedActions{
             xsltProcessor.importStylesheet(new DOMParser().parseFromString(xslt, 'text/xml'));
         }
         const ns = this.#target.nextElementSibling as HTMLElement;
+        ns.innerHTML = ''; 
+        const fragment = document.createDocumentFragment();
         this.#target.assignedNodes().forEach(el => {
 
             switch(el.nodeType){
                 case 1:
                     const clone = el.cloneNode(true);
-                    let resultDocument: DocumentFragment = clone as DocumentFragment;
-                    if(xsltProcessor !== undefined){
-                        resultDocument = xsltProcessor.transformToFragment(clone, document);
-                    }
-                    ns.appendChild(clone);
+                    fragment.appendChild(clone);
                     break;
             }
         });
+        let resultDocument: DocumentFragment = fragment as DocumentFragment;
+        if(xsltProcessor !== undefined){
+            resultDocument = xsltProcessor.transformToFragment(fragment, document);
+        }
+        
+        ns.appendChild(resultDocument);
         this.#target.classList.remove('being-ferried');
     }
 }

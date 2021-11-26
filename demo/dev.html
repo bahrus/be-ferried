@@ -18,7 +18,8 @@
     </form>
     <div -innerHTML>
         <template shadowroot=open>
-            <slot></slot>
+            <slot be-ferried></slot>
+            <be-hive></be-hive>
         </template>
     </div>
 
@@ -37,6 +38,7 @@
     </script>
     <script type=module>
         import 'be-reformable/be-reformable.js';
+        import '../be-ferried.js';
     </script>
 </body>
 </html>

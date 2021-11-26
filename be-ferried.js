@@ -5,11 +5,15 @@ export class BeFerriedController {
     intro(proxy, target, beDecor) {
         target.addEventListener('slotchange', this.handleSlotChange);
         this.#target = target;
+        this.transform();
     }
     finale(proxy, target, beDecor) {
         this.#target.removeEventListener('slotchange', this.handleSlotChange);
     }
-    handleSlotChange = async (e) => {
+    handleSlotChange = (e) => {
+        this.transform();
+    };
+    async transform() {
         this.#target.classList.add('being-ferried');
         let xsltProcessor;
         if (this.xslt !== undefined) {
@@ -18,20 +22,23 @@ export class BeFerriedController {
             xsltProcessor.importStylesheet(new DOMParser().parseFromString(xslt, 'text/xml'));
         }
         const ns = this.#target.nextElementSibling;
+        ns.innerHTML = '';
+        const fragment = document.createDocumentFragment();
         this.#target.assignedNodes().forEach(el => {
             switch (el.nodeType) {
                 case 1:
                     const clone = el.cloneNode(true);
-                    let resultDocument = clone;
-                    if (xsltProcessor !== undefined) {
-                        resultDocument = xsltProcessor.transformToFragment(clone, document);
-                    }
-                    ns.appendChild(clone);
+                    fragment.appendChild(clone);
                     break;
             }
         });
+        let resultDocument = fragment;
+        if (xsltProcessor !== undefined) {
+            resultDocument = xsltProcessor.transformToFragment(fragment, document);
+        }
+        ns.appendChild(resultDocument);
         this.#target.classList.remove('being-ferried');
-    };
+    }
 }
 const tagName = 'be-ferried';
 const ifWantsToBe = 'ferried';
