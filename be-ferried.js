@@ -19,12 +19,6 @@ export class BeFerriedController {
     }
     async transform({ xsltHref }) {
         this.#target.classList.add('being-ferried');
-        let xsltProcessor;
-        if (this.xslt !== undefined) {
-            const xslt = await fetch(xsltHref).then(r => r.text());
-            xsltProcessor = new XSLTProcessor();
-            xsltProcessor.importStylesheet(new DOMParser().parseFromString(xsltHref, 'text/xml'));
-        }
         const ns = this.#target.nextElementSibling;
         ns.innerHTML = '';
         const fragment = document.createDocumentFragment();
@@ -42,6 +36,12 @@ export class BeFerriedController {
         });
         if (!nonTrivial)
             return;
+        let xsltProcessor;
+        if (this.xslt !== undefined) {
+            const xslt = await fetch(xsltHref).then(r => r.text());
+            xsltProcessor = new XSLTProcessor();
+            xsltProcessor.importStylesheet(new DOMParser().parseFromString(xsltHref, 'text/xml'));
+        }
         let resultDocument = fragment;
         if (xsltProcessor !== undefined) {
             resultDocument = xsltProcessor.transformToFragment(fragment, document);
