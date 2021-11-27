@@ -25,7 +25,7 @@ export class BeFerriedController implements BeFerriedActions{
         this.#target.classList.add('being-ferried');
         let xsltProcessor: XSLTProcessor | undefined;
         if(this.xslt !== undefined){
-            const xslt = await fetch(this.xslt).then(r => r.text());
+            const xslt = await fetch(xsltHref).then(r => r.text());
             xsltProcessor = new XSLTProcessor();
             xsltProcessor.importStylesheet(new DOMParser().parseFromString(xsltHref, 'text/xml'));
         }
