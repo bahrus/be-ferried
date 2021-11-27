@@ -37,11 +37,9 @@ export class BeFerriedController {
         if (!nonTrivial)
             return;
         let xsltProcessor;
-        if (this.xslt !== undefined) {
-            const xslt = await fetch(xsltHref).then(r => r.text());
-            xsltProcessor = new XSLTProcessor();
-            xsltProcessor.importStylesheet(new DOMParser().parseFromString(xsltHref, 'text/xml'));
-        }
+        const xslt = await fetch(xsltHref).then(r => r.text());
+        xsltProcessor = new XSLTProcessor();
+        xsltProcessor.importStylesheet(new DOMParser().parseFromString(xsltHref, 'text/xml'));
         let resultDocument = fragment;
         if (xsltProcessor !== undefined) {
             resultDocument = xsltProcessor.transformToFragment(fragment, document);
