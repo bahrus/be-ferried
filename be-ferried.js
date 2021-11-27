@@ -21,9 +21,7 @@ export class BeFerriedController {
         this.#target.classList.add('being-ferried');
         const ns = this.#target.nextElementSibling;
         ns.innerHTML = '';
-        const fragment = document.createDocumentFragment();
         const div = document.createElement('div');
-        fragment.appendChild(div);
         let nonTrivial = false;
         this.#target.assignedNodes().forEach(el => {
             switch (el.nodeType) {
@@ -39,10 +37,10 @@ export class BeFerriedController {
         let xsltProcessor;
         const xslt = await fetch(xsltHref).then(r => r.text());
         xsltProcessor = new XSLTProcessor();
-        xsltProcessor.importStylesheet(new DOMParser().parseFromString(xsltHref, 'text/xml'));
-        let resultDocument = fragment;
+        xsltProcessor.importStylesheet(new DOMParser().parseFromString(xslt, 'text/xml'));
+        let resultDocument = div;
         if (xsltProcessor !== undefined) {
-            resultDocument = xsltProcessor.transformToFragment(fragment, document);
+            resultDocument = xsltProcessor.transformToFragment(div, document);
         }
         ns.appendChild(resultDocument);
         this.#target.classList.remove('being-ferried');

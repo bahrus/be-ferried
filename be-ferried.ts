@@ -25,9 +25,7 @@ export class BeFerriedController implements BeFerriedActions{
         this.#target.classList.add('being-ferried');
         const ns = this.#target.nextElementSibling as HTMLElement;
         ns.innerHTML = ''; 
-        const fragment = document.createDocumentFragment();
         const div = document.createElement('div');
-        fragment.appendChild(div);
         let nonTrivial = false;
         this.#target.assignedNodes().forEach(el => {
 
@@ -43,10 +41,10 @@ export class BeFerriedController implements BeFerriedActions{
         let xsltProcessor: XSLTProcessor | undefined;
         const xslt = await fetch(xsltHref).then(r => r.text());
         xsltProcessor = new XSLTProcessor();
-        xsltProcessor.importStylesheet(new DOMParser().parseFromString(xsltHref, 'text/xml'));
-        let resultDocument: DocumentFragment = fragment as DocumentFragment;
+        xsltProcessor.importStylesheet(new DOMParser().parseFromString(xslt, 'text/xml'));
+        let resultDocument: DocumentFragment = div as any as DocumentFragment;
         if(xsltProcessor !== undefined){
-            resultDocument = xsltProcessor.transformToFragment(fragment, document);
+            resultDocument = xsltProcessor.transformToFragment(div, document);
         }
         
         ns.appendChild(resultDocument);
