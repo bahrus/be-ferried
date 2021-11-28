@@ -26,11 +26,9 @@ export class BeFerriedController implements BeFerriedActions{
     async transform({xsltHref, parameters}: this){
         this.#target.classList.add('being-ferried');
         const ns = this.#target.nextElementSibling as HTMLElement;
-        ns.innerHTML = ''; 
         const div = document.createElement('div');
         let nonTrivial = false;
         this.#target.assignedNodes().forEach(el => {
-
             switch(el.nodeType){
                 case 1:
                     nonTrivial = true;
@@ -40,6 +38,7 @@ export class BeFerriedController implements BeFerriedActions{
             }
         });
         if(!nonTrivial) return;
+        ns.innerHTML = ''; 
         let xsltProcessor = xsltLookup[xsltHref];
         if(xsltProcessor === undefined){
             const xslt = await fetch(xsltHref).then(r => r.text());
@@ -60,6 +59,12 @@ export class BeFerriedController implements BeFerriedActions{
         }
         
         ns.appendChild(resultDocument);
+        if(this.removeLightChildren){
+            const slotName = this.#target.getAttribute('name');
+            const rn = (<any>this.#target.getRootNode()).host as Element;
+            const elementToClear = (slotName === null ? rn : rn.querySelector(`slot[name="${slotName}"]`)) as Element;
+            elementToClear.innerHTML = '';
+        }
         this.#target.classList.remove('being-ferried');
     }
 }
@@ -81,10 +86,11 @@ define<BeFerriedProps & BeDecoratedProps<BeFerriedProps, BeFerriedActions>, BeFe
             upgrade,
             intro: 'intro',
             finale: 'finale',
-            virtualProps: ['xslt', 'isC', 'xsltHref'],
+            virtualProps: ['xslt', 'isC', 'xsltHref', 'removeLightChildren', 'parameters'],
             proxyPropDefaults:{
                 isC: true,
                 slotChangeCount: 0,
+                removeLightChildren: false,
             }
         },
         actions:{

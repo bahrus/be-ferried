@@ -6,6 +6,7 @@ export interface BeFerriedVirtualProps{
     isC: boolean;
     slotChangeCount: number;
     parameters: XSLTParameter[];
+    removeLightChildren: boolean;
 }
 
 export interface XSLTParameter{
