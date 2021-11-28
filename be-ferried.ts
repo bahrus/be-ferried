@@ -23,7 +23,7 @@ export class BeFerriedController implements BeFerriedActions{
         hookUp(xslt, proxy, 'xsltHref');    
     }
 
-    async transform({xsltHref, parameters}: this){
+    async transform({xsltHref, parametersVal}: this){
         this.#target.classList.add('being-ferried');
         const ns = this.#target.nextElementSibling as HTMLElement;
         const div = document.createElement('div');
@@ -47,8 +47,8 @@ export class BeFerriedController implements BeFerriedActions{
             xsltLookup[xsltHref] = xsltProcessor;
         }
         xsltProcessor.clearParameters();
-        if(parameters !== undefined){
-            parameters.forEach(p => {
+        if(parametersVal !== undefined){
+            parametersVal.forEach(p => {
                 xsltProcessor.setParameter(p.namespaceURI, p.localName, p.value);
             });
         }
@@ -86,7 +86,7 @@ define<BeFerriedProps & BeDecoratedProps<BeFerriedProps, BeFerriedActions>, BeFe
             upgrade,
             intro: 'intro',
             finale: 'finale',
-            virtualProps: ['xslt', 'isC', 'xsltHref', 'removeLightChildren', 'parameters'],
+            virtualProps: ['xslt', 'isC', 'xsltHref', 'removeLightChildren', 'parametersVal'],
             proxyPropDefaults:{
                 isC: true,
                 slotChangeCount: 0,

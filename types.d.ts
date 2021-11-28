@@ -5,7 +5,7 @@ export interface BeFerriedVirtualProps{
     xsltHref: string;
     isC: boolean;
     slotChangeCount: number;
-    parameters: XSLTParameter[];
+    parametersVal: XSLTParameter[];
     removeLightChildren: boolean;
 }
 
