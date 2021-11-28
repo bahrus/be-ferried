@@ -1,6 +1,6 @@
 {
   "name": "be-ferried",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "Ferry a replica Light Children DOM into the underworld of Shadow DOM.",
   "main": "be-ferried.js",
   "module": "be-ferried.js",
@@ -13,7 +13,9 @@
     "custom-elements",
     "xslt"
   ],
-  "files":["*.*"],
+  "files": [
+    "*.*"
+  ],
   "types": "types.d.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
