@@ -1,12 +1,15 @@
 import {BeDecoratedProps} from 'be-decorated/types';
+import {IObserve} from 'be-observant/types';
 
 export interface BeFerriedVirtualProps{
-    xslt: string;
+    xslt: string | IObserve;
     xsltHref: string;
     isC: boolean;
     slotChangeCount: number;
+    parameters: string | IObserve;
     parametersVal: XSLTParameter[];
-    removeLightChildren: boolean;
+    removeLightChildren: string | IObserve;
+    removeLightChildrenVal: boolean;
 }
 
 export interface XSLTParameter{
@@ -23,5 +26,6 @@ export interface BeFerriedActions{
     finale(proxy: HTMLSlotElement & BeFerriedVirtualProps, target: HTMLSlotElement, beDecor: BeDecoratedProps): void;
     transform(self: this): void;
     onXSLT(self: this): void;
-    
+    onParameters(self: this): void;
+    onRemoveLightChildren(self: this): void;
 }
