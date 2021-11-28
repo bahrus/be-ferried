@@ -1,5 +1,7 @@
 # be-ferried
 
+Ferry a replica Light Children DOM into the underworld of Shadow DOM.
+
 Attribute-based equivalent of [slot-bot](https://github.com/bahrus/slot-bot), with additional features.
 
 

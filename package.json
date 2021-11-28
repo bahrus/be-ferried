@@ -1,10 +1,23 @@
 {
   "name": "be-ferried",
   "version": "0.0.6",
-  "description": "",
-  "main": "index.js",
+  "description": "Ferry a replica Light Children DOM into the underworld of Shadow DOM.",
+  "main": "be-ferried.js",
+  "module": "be-ferried.js",
+  "exports": {
+    ".": "./be-ferried.js",
+    "./be-ferried.js": "./be-ferried.js"
+  },
+  "keywords": [
+    "web-components",
+    "custom-elements",
+    "xslt"
+  ],
+  "files":["*.*"],
+  "types": "types.d.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
+    "package-check": "package-check",
     "serve": "node node_modules/xtal-test/serve.js"
   },
   "dependencies": {
@@ -23,7 +36,7 @@
     "type": "git",
     "url": "git+https://github.com/bahrus/be-ferried.git"
   },
-  "author": "",
+  "author": "anderson.bruce.b@gmail.com",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/bahrus/be-ferried/issues"
