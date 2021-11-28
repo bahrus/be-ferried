@@ -21,7 +21,7 @@ export class BeFerriedController implements BeFerriedActions{
         hookUp(xslt, proxy, 'xsltHref');    
     }
 
-    async transform({xsltHref}: this){
+    async transform({xsltHref, parameters}: this){
         this.#target.classList.add('being-ferried');
         const ns = this.#target.nextElementSibling as HTMLElement;
         ns.innerHTML = ''; 
@@ -38,9 +38,13 @@ export class BeFerriedController implements BeFerriedActions{
             }
         });
         if(!nonTrivial) return;
-        let xsltProcessor: XSLTProcessor | undefined;
         const xslt = await fetch(xsltHref).then(r => r.text());
-        xsltProcessor = new XSLTProcessor();
+        const xsltProcessor = new XSLTProcessor();
+        if(parameters !== undefined){
+            parameters.forEach(p => {
+                xsltProcessor.setParameter(p.namespaceURI, p.localName, p.value);
+            });
+        }
         xsltProcessor.importStylesheet(new DOMParser().parseFromString(xslt, 'text/xml'));
         let resultDocument: DocumentFragment = div as any as DocumentFragment;
         if(xsltProcessor !== undefined){

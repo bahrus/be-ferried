@@ -5,9 +5,14 @@ export interface BeFerriedVirtualProps{
     xsltHref: string;
     isC: boolean;
     slotChangeCount: number;
+    parameters: XSLTParameter[];
 }
 
-
+export interface XSLTParameter{
+    namespaceURI: string | null;
+    localName: string;
+    value: any;
+}
 export interface BeFerriedProps extends BeFerriedVirtualProps{
     proxy: HTMLSlotElement & BeFerriedVirtualProps;
 }
