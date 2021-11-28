@@ -1,6 +1,7 @@
 import { define } from 'be-decorated/be-decorated.js';
 import { hookUp } from 'be-observant/hookUp.js';
 import { register } from 'be-hive/register.js';
+const xsltLookup = {};
 export class BeFerriedController {
     #target;
     intro(proxy, target, beDecor) {
@@ -34,14 +35,19 @@ export class BeFerriedController {
         });
         if (!nonTrivial)
             return;
-        const xslt = await fetch(xsltHref).then(r => r.text());
-        const xsltProcessor = new XSLTProcessor();
+        let xsltProcessor = xsltLookup[xsltHref];
+        if (xsltProcessor === undefined) {
+            const xslt = await fetch(xsltHref).then(r => r.text());
+            xsltProcessor = new XSLTProcessor();
+            xsltProcessor.importStylesheet(new DOMParser().parseFromString(xslt, 'text/xml'));
+            xsltLookup[xsltHref] = xsltProcessor;
+        }
+        xsltProcessor.clearParameters();
         if (parameters !== undefined) {
             parameters.forEach(p => {
                 xsltProcessor.setParameter(p.namespaceURI, p.localName, p.value);
             });
         }
-        xsltProcessor.importStylesheet(new DOMParser().parseFromString(xslt, 'text/xml'));
         let resultDocument = div;
         if (xsltProcessor !== undefined) {
             resultDocument = xsltProcessor.transformToFragment(div, document);
