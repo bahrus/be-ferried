@@ -4,7 +4,13 @@ Ferry a replica Light Children DOM into the underworld of Shadow DOM.
 
 Attribute-based equivalent of [slot-bot](https://github.com/bahrus/slot-bot), with additional features.
 
+be-ferried also has significantly overlapping functionality with [be-metamorphic](https://github.com/bahrus/be-metamorphic).  The major difference is that be-ferried is expected to be used as a helper behavior for a traditional Shadow DOM-based web component.  A web component where the referenced dependencies can be loaded in a standard way (but dynamic imports somewhat defeats the purpose).  [bra-ket](https://givhub.com/bahrus/bra-ket) is one such web component library.
 
+Whereas be-metamorphic is not tightly coupled to Shadow DOM functionality, and works well with (outside) code loading references dynamically via import('path/to/web-components').
+
+Anyway...
+
+## Syntax Example
 
 ```html
 <k-fetch href="https://cf-sw.bahrus.workers.dev/?href=https://cdn.skypack.dev/@shoelace-style/shoelace/dist/custom-elements.json&embedded=true" as=html target=div></k-fetch>
