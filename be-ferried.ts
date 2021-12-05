@@ -4,6 +4,8 @@ import {hookUp} from 'be-observant/hookUp.js';
 import {register} from 'be-hive/register.js';
 
 const xsltLookup: {[key: string]: XSLTProcessor} = {};
+const scts = ['area', 'base', 'br', 'col', 'embed', 'hr', 'img', 'input', 'keygen', 'link', 'meta', 'param', 'source', 'track', 'wbr'];
+
 
 export class BeFerriedController implements BeFerriedActions{
     #target!: HTMLSlotElement;
@@ -40,7 +42,15 @@ export class BeFerriedController implements BeFerriedActions{
             switch(el.nodeType){
                 case 1:
                     nonTrivial = true;
-                    const clone = el.cloneNode(true);
+                    const clone = el.cloneNode(true) as DocumentFragment;
+                    const problemTags = clone.querySelectorAll(scts.join(','));
+                    problemTags.forEach(tag => {
+                        const newTag = document.createElement(tag.localName + '-ish');
+                        for(let i = 0, ii = tag.attributes.length; i < ii; i++){
+                            newTag.setAttribute(tag.attributes[i].name, tag.attributes[i].value);
+                        }
+                    });
+                    problemTags.forEach(tag => tag.remove());
                     div.appendChild(clone);
                     break;
             }
