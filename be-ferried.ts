@@ -52,7 +52,7 @@ export class BeFerriedController implements BeFerriedActions{
                         }
                     });
                     problemTags.forEach(tag => tag.remove());
-                    div.appendChild(clone);
+                    div.appendChild(clone.cloneNode(true));
                     break;
             }
         });
