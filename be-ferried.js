@@ -34,7 +34,7 @@ export class BeFerriedController {
             switch (el.nodeType) {
                 case 1:
                     nonTrivial = true;
-                    const clone = el.cloneNode(true);
+                    const clone = (el instanceof HTMLTemplateElement ? el.content.cloneNode(true) : el.cloneNode(true));
                     const problemTags = clone.querySelectorAll(scts.join(','));
                     problemTags.forEach(tag => {
                         const newTag = document.createElement(tag.localName + '-ish');
