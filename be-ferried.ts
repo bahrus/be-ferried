@@ -38,11 +38,15 @@ export class BeFerriedController implements BeFerriedActions{
         const ns = this.#target.nextElementSibling as HTMLElement;
         const div = document.createElement('div');
         let nonTrivial = false;
+        let hasTemplate = false;
         this.#target.assignedNodes().forEach(el => {
             switch(el.nodeType){
                 case 1:
                     nonTrivial = true;
                     const isTemplate = el instanceof HTMLTemplateElement;
+                    if(isTemplate){
+                        hasTemplate = true;
+                    }
                     const clone = (isTemplate ? el.content.cloneNode(true) : el.cloneNode(true)) as DocumentFragment;
                     const problemTags = clone.querySelectorAll(scts.join(','));
                     problemTags.forEach(tag => {
@@ -77,12 +81,17 @@ export class BeFerriedController implements BeFerriedActions{
         if(xsltProcessor !== undefined){
             resultDocument = xsltProcessor.transformToFragment(div, document);
         }
-        const arr = resultDocument.children;
-        const h: string[] = [];
-        for(const item of arr){
-            h.push(item.outerHTML);
+        if(hasTemplate){
+            const arr = resultDocument.children;
+            const h: string[] = [];
+            for(const item of arr){
+                h.push(item.outerHTML);
+            }
+            ns.innerHTML = h.join('');
+        }else{
+            ns.appendChild(resultDocument);
         }
-        ns.innerHTML = h.join('');
+
         if(this.removeLightChildrenVal){
             const slotName = this.#target.getAttribute('name');
             const rn = (<any>this.#target.getRootNode()).host as Element;
