@@ -34,7 +34,8 @@ export class BeFerriedController {
             switch (el.nodeType) {
                 case 1:
                     nonTrivial = true;
-                    const clone = (el instanceof HTMLTemplateElement ? el.content.cloneNode(true) : el.cloneNode(true));
+                    const isTemplate = el instanceof HTMLTemplateElement;
+                    const clone = (isTemplate ? el.content.cloneNode(true) : el.cloneNode(true));
                     const problemTags = clone.querySelectorAll(scts.join(','));
                     problemTags.forEach(tag => {
                         const newTag = document.createElement(tag.localName + '-ish');
@@ -44,7 +45,7 @@ export class BeFerriedController {
                         }
                     });
                     problemTags.forEach(tag => tag.remove());
-                    div.appendChild(clone.cloneNode(true));
+                    div.appendChild(clone);
                     break;
             }
         });
@@ -68,7 +69,12 @@ export class BeFerriedController {
         if (xsltProcessor !== undefined) {
             resultDocument = xsltProcessor.transformToFragment(div, document);
         }
-        ns.appendChild(resultDocument);
+        const arr = resultDocument.children;
+        const h = [];
+        for (const item of arr) {
+            h.push(item.outerHTML);
+        }
+        ns.innerHTML = h.join('');
         if (this.removeLightChildrenVal) {
             const slotName = this.#target.getAttribute('name');
             const rn = this.#target.getRootNode().host;
