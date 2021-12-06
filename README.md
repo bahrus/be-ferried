@@ -18,7 +18,9 @@ Other use cases for be-ferried include:
 
 1.  Converting a nice code-pen example to a web component with minimal work -- many code-pens are css-heavy, and refactoring them to be web components can be a bit of an obstacle, if one requires that the developer ergonomic design of the web components be flawless.  But sometimes the perfect is the enemy of the good.  As a first draft, it may just be useful to copy the light children into the ShadowDOM, where the css styling can be safely applied, confident that they won't leak outside the Shadow DOM.  And maybe the HTML that makes sense outside the ShadowDOM is quite a bit different from the HTML that makes sense inside the ShadowDOM, so apply an xslt transform as needed.  Leave the task of perfecting / optimizing the component with tender loving care to a time when bandwidth is available, after the usefulness of the component is proven. 
 
-2.  Supporting an environment where the api's providing the content are willing to provide the content in HTML format, but would prefer to stick to a stable, single, semi-permanent markup schema that best represents the business functionality, and let components using be-ferried do the grunge work of converting the HTML to the desired design library of the hour. 
+2.  Supporting an environment where the api's providing the content are willing to provide the content in HTML format, but would prefer to stick to a stable, single, semi-permanent markup schema that best represents the business functionality, and let components using be-ferried do the grunge work of converting the HTML to the desired design library of the hour.
+
+3.  Scenarios where HTML that is retrieved provides data, but not the UI.  First example of this is for [Third-party link preview content](https://github.com/bahrus/xtal-link-preview).
 
 ## Syntax Example
 
