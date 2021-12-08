@@ -6,7 +6,7 @@ Attribute-based equivalent of [slot-bot](https://github.com/bahrus/slot-bot), wi
 
 be-ferried also shares significantly overlapping functionality with [be-metamorphic](https://github.com/bahrus/be-metamorphic). The differences are a bit subtle, and are discussed below.
 
-As with be-metamorphic, one use case be-ferried focuses on is the scenario where we want to quickly display a large amount of server-rendered HTML, where we can live with the initial content applying out-of-the-box formatting based on native semantic elements (perhaps with a style tag or two), for optimum First Content Paint. Then once a design library such as UI5, or FAST, or Shoelace, or whatever, is downloaded, replace the native semantic elements with corresponding UI5 elements (for example), in order to gain from the enhancements the library provides over the native elements.
+As with be-metamorphic, one use case be-ferried focuses on is the scenario where we want to quickly display a large amount of server-rendered HTML, where we can live with the initial content applying out-of-the-box formatting based on native semantic elements (perhaps with a style tag or two), for optimum First Content Paint. Then once a design library such as UI5, or FAST, or Shoelace, or Carbon Design Web Components, or whatever, is downloaded, replace the native semantic elements with corresponding UI5 elements (for example), in order to gain from the enhancements the library provides over the native elements.
 
 The major difference between be-ferried and be-metamorphic is that be-ferried is expected to be used as a helper behavior for a traditional Shadow DOM-based web component.  A web component where the referenced dependencies can be loaded in a standard way (but dynamic imports somewhat defeats the purpose). [bra-ket](https://github.com/bahrus/bra-ket) is a web component that leverages be-ferried in this way.
 
@@ -18,7 +18,9 @@ Other use cases for be-ferried include:
 
 1.  Converting a nice code-pen example to a web component with minimal work -- many code-pens are css-heavy, and refactoring them to be web components can be a bit of an obstacle, if one requires that the developer ergonomic design of the web components be flawless.  But sometimes the perfect is the enemy of the good.  As a first draft, it may just be useful to copy the light children into the ShadowDOM, where the css styling can be safely applied, confident that they won't leak outside the Shadow DOM.  And maybe the HTML that makes sense outside the ShadowDOM is quite a bit different from the HTML that makes sense inside the ShadowDOM, so apply an xslt transform as needed.  Leave the task of perfecting / optimizing the component with tender loving care to a time when bandwidth is available, after the usefulness of the component is proven. 
 
-2.  Supporting an environment where the api's providing the content are willing to provide the content in HTML format, but would prefer to stick to a stable, single, semi-permanent markup schema that best represents the business functionality, and let components using be-ferried do the grunge work of converting the HTML to the desired design library of the hour. 
+2.  Supporting an environment where the api's providing the content are willing to provide the content in HTML format, but would prefer to stick to a stable, single, semi-permanent markup schema that best represents the business functionality, and let components using be-ferried do the grunge work of converting the HTML to the desired design library of the hour.
+
+3.  Scenarios where HTML that is retrieved provides data, but not the UI.  First example of this is for [Third-party link preview content](https://github.com/bahrus/xtal-link-preview).
 
 ## Syntax Example
 
