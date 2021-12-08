@@ -6,6 +6,7 @@ import {register} from 'be-hive/register.js';
 const xsltLookup: {[key: string]: XSLTProcessor} = {};
 const scts = ['area', 'base', 'br', 'col', 'embed', 'hr', 'img', 'input', 'keygen', 'link', 'meta', 'param', 'source', 'track', 'wbr'];
 
+const remove = ['script'];
 
 export class BeFerriedController implements BeFerriedActions{
     #target!: HTMLSlotElement;
@@ -57,6 +58,8 @@ export class BeFerriedController implements BeFerriedActions{
                         }
                     });
                     problemTags.forEach(tag => tag.remove());
+                    const forbiddenTags = clone.querySelectorAll(remove.join(','));
+                    forbiddenTags.forEach(tag => tag.remove());
                     div.appendChild(clone);
                     break;
             }
