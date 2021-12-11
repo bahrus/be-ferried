@@ -6,7 +6,7 @@ import {register} from 'be-hive/register.js';
 const xsltLookup: {[key: string]: XSLTProcessor} = {};
 const scts = ['area', 'base', 'br', 'col', 'embed', 'hr', 'img', 'input', 'keygen', 'link', 'meta', 'param', 'source', 'track', 'wbr'];
 
-const remove = ['script'];
+const remove = ['script', 'noscript'];
 
 export class BeFerriedController implements BeFerriedActions{
     #target!: HTMLSlotElement;
