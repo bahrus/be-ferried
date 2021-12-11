@@ -3,7 +3,7 @@ import {BeFerriedActions, BeFerriedProps, BeFerriedVirtualProps} from './types';
 import {hookUp} from 'be-observant/hookUp.js';
 import {register} from 'be-hive/register.js';
 
-const xsltLookup: {[key: string]: XSLTProcessor} = {};
+const xsltLookup: {[key: string]: XSLTProcessor | 'loading'} = {};
 const scts = ['area', 'base', 'br', 'col', 'embed', 'hr', 'img', 'input', 'keygen', 'link', 'meta', 'param', 'source', 'track', 'wbr'];
 
 const remove = ['script', 'noscript'];
@@ -35,6 +35,18 @@ export class BeFerriedController implements BeFerriedActions{
     }
 
     async transform({xsltHref, parametersVal}: this){
+        let xsltProcessor = xsltLookup[xsltHref];
+        if(xsltProcessor === undefined){
+            xsltLookup[xsltHref] = 'loading';
+            const xslt = await fetch(xsltHref).then(r => r.text());
+            xsltProcessor = new XSLTProcessor();
+            xsltProcessor.importStylesheet(new DOMParser().parseFromString(xslt, 'text/xml'));
+            xsltLookup[xsltHref] = xsltProcessor;
+        }
+        if(xsltProcessor === 'loading') {
+            setTimeout(() => this.transform(this), 100);
+            return;
+        }
         this.#target.classList.add('being-ferried');
         const ns = this.#target.nextElementSibling as HTMLElement;
         const div = document.createElement('div');
@@ -66,17 +78,11 @@ export class BeFerriedController implements BeFerriedActions{
         });
         if(!nonTrivial) return;
         ns.innerHTML = ''; 
-        let xsltProcessor = xsltLookup[xsltHref];
-        if(xsltProcessor === undefined){
-            const xslt = await fetch(xsltHref).then(r => r.text());
-            xsltProcessor = new XSLTProcessor();
-            xsltProcessor.importStylesheet(new DOMParser().parseFromString(xslt, 'text/xml'));
-            xsltLookup[xsltHref] = xsltProcessor;
-        }
+
         xsltProcessor.clearParameters();
         if(parametersVal !== undefined){
             parametersVal.forEach(p => {
-                xsltProcessor.setParameter(p.namespaceURI, p.localName, p.value);
+                (xsltProcessor as XSLTProcessor).setParameter(p.namespaceURI, p.localName, p.value);
             });
         }
         

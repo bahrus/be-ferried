@@ -27,6 +27,18 @@ export class BeFerriedController {
         hookUp(removeLightChildren, proxy, 'removeLightChildrenVal');
     }
     async transform({ xsltHref, parametersVal }) {
+        let xsltProcessor = xsltLookup[xsltHref];
+        if (xsltProcessor === undefined) {
+            xsltLookup[xsltHref] = 'loading';
+            const xslt = await fetch(xsltHref).then(r => r.text());
+            xsltProcessor = new XSLTProcessor();
+            xsltProcessor.importStylesheet(new DOMParser().parseFromString(xslt, 'text/xml'));
+            xsltLookup[xsltHref] = xsltProcessor;
+        }
+        if (xsltProcessor === 'loading') {
+            setTimeout(() => this.transform(this), 100);
+            return;
+        }
         this.#target.classList.add('being-ferried');
         const ns = this.#target.nextElementSibling;
         const div = document.createElement('div');
@@ -59,13 +71,6 @@ export class BeFerriedController {
         if (!nonTrivial)
             return;
         ns.innerHTML = '';
-        let xsltProcessor = xsltLookup[xsltHref];
-        if (xsltProcessor === undefined) {
-            const xslt = await fetch(xsltHref).then(r => r.text());
-            xsltProcessor = new XSLTProcessor();
-            xsltProcessor.importStylesheet(new DOMParser().parseFromString(xslt, 'text/xml'));
-            xsltLookup[xsltHref] = xsltProcessor;
-        }
         xsltProcessor.clearParameters();
         if (parametersVal !== undefined) {
             parametersVal.forEach(p => {
