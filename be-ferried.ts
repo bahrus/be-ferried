@@ -60,7 +60,7 @@ export class BeFerriedController implements BeFerriedActions{
                     if(isTemplate){
                         hasTemplate = true;
                     }
-                    const clone = (isTemplate ? el.content.cloneNode(true) : el.cloneNode(true)) as DocumentFragment;
+                    const clone = (isTemplate ? (el as HTMLTemplateElement).content.cloneNode(true) : el.cloneNode(true)) as DocumentFragment;
                     const problemTags = clone.querySelectorAll(scts.join(','));
                     problemTags.forEach(tag => {
                         const newTag = document.createElement(tag.localName + '-ish');
@@ -82,7 +82,7 @@ export class BeFerriedController implements BeFerriedActions{
         xsltProcessor.clearParameters();
         if(parametersVal !== undefined){
             parametersVal.forEach(p => {
-                (xsltProcessor as XSLTProcessor).setParameter(p.namespaceURI, p.localName, p.value);
+                (xsltProcessor as XSLTProcessor).setParameter(p.namespaceURI!, p.localName, p.value);
             });
         }
         
