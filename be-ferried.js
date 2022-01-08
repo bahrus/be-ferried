@@ -7,6 +7,7 @@ const remove = ['script', 'noscript'];
 export class BeFerriedController {
     #target;
     intro(proxy, target, beDecor) {
+        this.transform(this);
         target.addEventListener('slotchange', this.handleSlotChange);
         this.#target = target;
     }
@@ -27,6 +28,9 @@ export class BeFerriedController {
         hookUp(removeLightChildren, proxy, 'removeLightChildrenVal');
     }
     async transform({ xsltHref, parametersVal }) {
+        const assignedNodes = this.#target.assignedNodes();
+        if (assignedNodes.length === 0)
+            return;
         let xsltProcessor = xsltLookup[xsltHref];
         if (xsltProcessor === undefined) {
             xsltLookup[xsltHref] = 'loading';
@@ -44,7 +48,7 @@ export class BeFerriedController {
         const div = document.createElement('div');
         let nonTrivial = false;
         let hasTemplate = false;
-        this.#target.assignedNodes().forEach(el => {
+        assignedNodes.forEach(el => {
             switch (el.nodeType) {
                 case 1:
                     nonTrivial = true;

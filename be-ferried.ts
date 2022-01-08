@@ -11,6 +11,7 @@ const remove = ['script', 'noscript'];
 export class BeFerriedController implements BeFerriedActions{
     #target!: HTMLSlotElement;
     intro(proxy: HTMLSlotElement & BeFerriedVirtualProps, target: HTMLSlotElement, beDecor: BeDecoratedProps){
+        this.transform(this);
         target.addEventListener('slotchange', this.handleSlotChange);
         this.#target = target;
     }
@@ -35,6 +36,8 @@ export class BeFerriedController implements BeFerriedActions{
     }
 
     async transform({xsltHref, parametersVal}: this){
+        const assignedNodes = this.#target.assignedNodes();
+        if(assignedNodes.length === 0) return;
         let xsltProcessor = xsltLookup[xsltHref];
         if(xsltProcessor === undefined){
             xsltLookup[xsltHref] = 'loading';
@@ -52,7 +55,7 @@ export class BeFerriedController implements BeFerriedActions{
         const div = document.createElement('div');
         let nonTrivial = false;
         let hasTemplate = false;
-        this.#target.assignedNodes().forEach(el => {
+        assignedNodes.forEach(el => {
             switch(el.nodeType){
                 case 1:
                     nonTrivial = true;
