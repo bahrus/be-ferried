@@ -25,6 +25,7 @@ export interface BeFerriedActions{
     intro(proxy: HTMLSlotElement & BeFerriedVirtualProps, target: HTMLSlotElement, beDecor: BeDecoratedProps): void;
     finale(proxy: HTMLSlotElement & BeFerriedVirtualProps, target: HTMLSlotElement, beDecor: BeDecoratedProps): void;
     transform(self: this): void;
+    ferryUnaltered(self: this): void;
     onXSLT(self: this): void;
     onParameters(self: this): void;
     onRemoveLightChildren(self: this): void;
