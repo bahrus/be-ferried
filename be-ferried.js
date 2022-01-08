@@ -7,9 +7,9 @@ const remove = ['script', 'noscript'];
 export class BeFerriedController {
     #target;
     intro(proxy, target, beDecor) {
+        this.#target = target;
         this.transform(this);
         target.addEventListener('slotchange', this.handleSlotChange);
-        this.#target = target;
     }
     finale(proxy, target, beDecor) {
         this.#target.removeEventListener('slotchange', this.handleSlotChange);

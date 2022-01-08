@@ -11,9 +11,10 @@ const remove = ['script', 'noscript'];
 export class BeFerriedController implements BeFerriedActions{
     #target!: HTMLSlotElement;
     intro(proxy: HTMLSlotElement & BeFerriedVirtualProps, target: HTMLSlotElement, beDecor: BeDecoratedProps){
+        this.#target = target;
         this.transform(this);
         target.addEventListener('slotchange', this.handleSlotChange);
-        this.#target = target;
+        
     }
     finale(proxy: HTMLSlotElement & BeFerriedVirtualProps, target: HTMLSlotElement, beDecor: BeDecoratedProps){
         this.#target.removeEventListener('slotchange', this.handleSlotChange);
