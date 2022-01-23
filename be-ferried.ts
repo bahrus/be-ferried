@@ -2,6 +2,7 @@ import {define, BeDecoratedProps} from 'be-decorated/be-decorated.js';
 import {BeFerriedActions, BeFerriedProps, BeFerriedVirtualProps} from './types';
 import {hookUp} from 'be-observant/hookUp.js';
 import {register} from 'be-hive/register.js';
+import { unsubscribe } from 'trans-render/lib/subscribe.js';
 
 export const xsltLookup: {[key: string]: XSLTProcessor | 'loading'} = {};
 export const scts = ['area', 'base', 'br', 'col', 'embed', 'hr', 'img', 'input', 'keygen', 'link', 'meta', 'param', 'source', 'track', 'wbr'];
@@ -16,6 +17,7 @@ export class BeFerriedController implements BeFerriedActions{
     }
     finale(proxy: HTMLSlotElement & BeFerriedVirtualProps, target: HTMLSlotElement, beDecor: BeDecoratedProps){
         this.#target.removeEventListener('slotchange', this.handleSlotChange);
+        unsubscribe(proxy);
     }
     handleSlotChange = (e: Event) => {
         this.proxy.slotChangeCount++;

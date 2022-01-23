@@ -1,6 +1,7 @@
 import {BeFerriedProps, BeFerriedVirtualProps} from './types';
 import {scts, xsltLookup, remove} from './be-ferried.js';
 
+
 export async function doTransform(self: BeFerriedProps, target: HTMLSlotElement){
     const {xsltHref, parametersVal, removeLightChildrenVal} = self;
     const assignedNodes = target.assignedNodes();

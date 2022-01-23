@@ -1,6 +1,7 @@
 import { define } from 'be-decorated/be-decorated.js';
 import { hookUp } from 'be-observant/hookUp.js';
 import { register } from 'be-hive/register.js';
+import { unsubscribe } from 'trans-render/lib/subscribe.js';
 export const xsltLookup = {};
 export const scts = ['area', 'base', 'br', 'col', 'embed', 'hr', 'img', 'input', 'keygen', 'link', 'meta', 'param', 'source', 'track', 'wbr'];
 export const remove = ['script', 'noscript'];
@@ -12,6 +13,7 @@ export class BeFerriedController {
     }
     finale(proxy, target, beDecor) {
         this.#target.removeEventListener('slotchange', this.handleSlotChange);
+        unsubscribe(proxy);
     }
     handleSlotChange = (e) => {
         this.proxy.slotChangeCount++;
