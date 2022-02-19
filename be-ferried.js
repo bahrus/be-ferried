@@ -1,7 +1,5 @@
 import { define } from 'be-decorated/be-decorated.js';
-import { hookUp } from 'be-observant/hookUp.js';
 import { register } from 'be-hive/register.js';
-import { unsubscribe } from 'trans-render/lib/subscribe.js';
 export const xsltLookup = {};
 export const scts = ['area', 'base', 'br', 'col', 'embed', 'hr', 'img', 'input', 'keygen', 'link', 'meta', 'param', 'source', 'track', 'wbr'];
 export const remove = ['script', 'noscript'];
@@ -11,21 +9,25 @@ export class BeFerriedController {
         this.#target = target;
         target.addEventListener('slotchange', this.handleSlotChange);
     }
-    finale(proxy, target, beDecor) {
+    async finale(proxy, target, beDecor) {
         this.#target.removeEventListener('slotchange', this.handleSlotChange);
+        const { unsubscribe } = await import('trans-render/lib/subscribe.js');
         unsubscribe(proxy);
     }
     handleSlotChange = (e) => {
         this.proxy.slotChangeCount++;
         //this.transform(this);
     };
-    onXSLT({ xslt, proxy }) {
+    async onXSLT({ xslt, proxy }) {
+        const { hookUp } = await import('be-observant/hookUp.js');
         hookUp(xslt, proxy, 'xsltHref');
     }
-    onParameters({ parameters, proxy }) {
+    async onParameters({ parameters, proxy }) {
+        const { hookUp } = await import('be-observant/hookUp.js');
         hookUp(parameters, proxy, 'parametersVal');
     }
-    onRemoveLightChildren({ removeLightChildren, proxy }) {
+    async onRemoveLightChildren({ removeLightChildren, proxy }) {
+        const { hookUp } = await import('be-observant/hookUp.js');
         hookUp(removeLightChildren, proxy, 'removeLightChildrenVal');
     }
     ferryUnaltered({}) {

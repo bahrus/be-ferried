@@ -1,8 +1,6 @@
 import {define, BeDecoratedProps} from 'be-decorated/be-decorated.js';
 import {BeFerriedActions, BeFerriedProps, BeFerriedVirtualProps} from './types';
-import {hookUp} from 'be-observant/hookUp.js';
 import {register} from 'be-hive/register.js';
-import { unsubscribe } from 'trans-render/lib/subscribe.js';
 
 export const xsltLookup: {[key: string]: XSLTProcessor | 'loading'} = {};
 export const scts = ['area', 'base', 'br', 'col', 'embed', 'hr', 'img', 'input', 'keygen', 'link', 'meta', 'param', 'source', 'track', 'wbr'];
@@ -15,8 +13,9 @@ export class BeFerriedController implements BeFerriedActions{
         target.addEventListener('slotchange', this.handleSlotChange);
         
     }
-    finale(proxy: HTMLSlotElement & BeFerriedVirtualProps, target: HTMLSlotElement, beDecor: BeDecoratedProps){
+    async finale(proxy: HTMLSlotElement & BeFerriedVirtualProps, target: HTMLSlotElement, beDecor: BeDecoratedProps){
         this.#target.removeEventListener('slotchange', this.handleSlotChange);
+        const {unsubscribe} = await import('trans-render/lib/subscribe.js');
         unsubscribe(proxy);
     }
     handleSlotChange = (e: Event) => {
@@ -24,15 +23,18 @@ export class BeFerriedController implements BeFerriedActions{
         //this.transform(this);
     }
 
-    onXSLT({xslt, proxy}: this){
+    async onXSLT({xslt, proxy}: this){
+        const {hookUp} = await import('be-observant/hookUp.js');
         hookUp(xslt, proxy, 'xsltHref');    
     }
 
-    onParameters({parameters, proxy}: this){
+    async onParameters({parameters, proxy}: this){
+        const {hookUp} = await import('be-observant/hookUp.js');
         hookUp(parameters, proxy, 'parametersVal');
     }
 
-    onRemoveLightChildren({removeLightChildren, proxy}: this){
+    async onRemoveLightChildren({removeLightChildren, proxy}: this){
+        const {hookUp} = await import('be-observant/hookUp.js');
         hookUp(removeLightChildren, proxy, 'removeLightChildrenVal');
     }
 
