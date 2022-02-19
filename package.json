@@ -1,6 +1,6 @@
 {
   "name": "be-ferried",
-  "version": "0.0.31",
+  "version": "0.0.32",
   "description": "Ferry a replica Light Children DOM into the underworld of Shadow DOM.",
   "main": "be-ferried.js",
   "module": "be-ferried.js",
