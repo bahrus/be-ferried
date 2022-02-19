@@ -23,10 +23,10 @@
     "serve": "node node_modules/xtal-test/serve.js"
   },
   "dependencies": {
-    "be-decorated": "0.0.81",
-    "be-hive": "0.0.31",
-    "be-observant": "0.0.95",
-    "trans-render": "0.0.484"
+    "be-decorated": "0.0.82",
+    "be-hive": "0.0.32",
+    "be-observant": "0.0.97",
+    "trans-render": "0.0.485"
   },
   "devDependencies": {
     "xtal-test": "0.0.55",
