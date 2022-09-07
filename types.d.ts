@@ -1,15 +1,17 @@
-import {BeDecoratedProps} from 'be-decorated/types';
+import {BeDecoratedProps, MinimalProxy} from 'be-decorated/types';
 import {IObserve} from 'be-observant/types';
 
-export interface BeFerriedVirtualProps{
-    xslt: string | IObserve;
-    xsltHref: string;
+export interface EndUserProps{
+    xslt?: string | IObserve;
+    xsltHref?: string;
+    parameters?: string | IObserve;
+    parametersVal?: XSLTParameter[];
+    removeLightChildren?: string | IObserve;
+    removeLightChildrenVal?: boolean;
+}
+export interface VirtualProps extends EndUserProps, MinimalProxy<HTMLSlotElement>{
     isC: boolean;
     slotChangeCount: number;
-    parameters: string | IObserve;
-    parametersVal: XSLTParameter[];
-    removeLightChildren: string | IObserve;
-    removeLightChildrenVal: boolean;
 }
 
 export interface XSLTParameter{
@@ -17,16 +19,21 @@ export interface XSLTParameter{
     localName: string;
     value: any;
 }
-export interface BeFerriedProps extends BeFerriedVirtualProps{
-    proxy: HTMLSlotElement & BeFerriedVirtualProps;
+
+export type Proxy = HTMLSlotElement & VirtualProps;
+
+export interface ProxyProps extends VirtualProps{
+    proxy: Proxy;
 }
 
-export interface BeFerriedActions{
-    intro(proxy: HTMLSlotElement & BeFerriedVirtualProps, target: HTMLSlotElement, beDecor: BeDecoratedProps): void;
-    finale(proxy: HTMLSlotElement & BeFerriedVirtualProps, target: HTMLSlotElement, beDecor: BeDecoratedProps): void;
-    transform(self: this): void;
-    ferryUnaltered(self: this): void;
-    onXSLT(self: this): void;
-    onParameters(self: this): void;
-    onRemoveLightChildren(self: this): void;
+export type PP = ProxyProps;
+
+export interface Actions{
+    intro(proxy: Proxy, target: HTMLSlotElement, beDecor: BeDecoratedProps): void;
+    finale(proxy: Proxy, target: HTMLSlotElement, beDecor: BeDecoratedProps): void;
+    transform(pp: PP): void;
+    ferryUnaltered(pp: PP): void;
+    onXSLT(pp: PP): void;
+    onParameters(pp: PP): void;
+    onRemoveLightChildren(pp: PP): void;
 }

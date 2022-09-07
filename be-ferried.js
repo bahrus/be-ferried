@@ -4,20 +4,22 @@ export const xsltLookup = {};
 export const scts = ['area', 'base', 'br', 'col', 'embed', 'hr', 'img', 'input', 'keygen', 'link', 'meta', 'param', 'source', 'track', 'wbr'];
 export const remove = ['script', 'noscript'];
 export class BeFerriedController {
-    #target;
+    #abortController;
     intro(proxy, target, beDecor) {
-        this.#target = target;
-        target.addEventListener('slotchange', this.handleSlotChange);
+        this.#abortController = new AbortController();
+        target.addEventListener('slotchange', e => {
+            this.handleSlotChange(proxy);
+        }, {
+            signal: this.#abortController.signal,
+        });
     }
     async finale(proxy, target, beDecor) {
-        this.#target.removeEventListener('slotchange', this.handleSlotChange);
         const { unsubscribe } = await import('trans-render/lib/subscribe.js');
         unsubscribe(proxy);
     }
-    handleSlotChange = (e) => {
-        this.proxy.slotChangeCount++;
-        //this.transform(this);
-    };
+    handleSlotChange(proxy) {
+        proxy.slotChangeCount++;
+    }
     async onXSLT({ xslt, proxy }) {
         const { hookUp } = await import('be-observant/hookUp.js');
         hookUp(xslt, proxy, 'xsltHref');
@@ -30,11 +32,13 @@ export class BeFerriedController {
         const { hookUp } = await import('be-observant/hookUp.js');
         hookUp(removeLightChildren, proxy, 'removeLightChildrenVal');
     }
-    ferryUnaltered({}) {
-        const assignedNodes = this.#target.assignedNodes();
+    ferryUnaltered({ self, xsltHref }) {
+        if (!xsltHref)
+            return;
+        const assignedNodes = self.assignedNodes();
         if (assignedNodes.length === 0)
             return;
-        const ns = this.#target.nextElementSibling;
+        const ns = self.nextElementSibling;
         ns.innerHTML = '';
         assignedNodes.forEach(el => {
             switch (el.nodeType) {
@@ -46,9 +50,9 @@ export class BeFerriedController {
             }
         });
     }
-    async transform({ xsltHref, parametersVal }) {
+    async transform({ xsltHref, parametersVal, self }) {
         const { doTransform } = await import('./doTransform.js');
-        doTransform(this, this.#target);
+        doTransform(this, self);
     }
 }
 const tagName = 'be-ferried';
@@ -79,7 +83,6 @@ define({
             },
             ferryUnaltered: {
                 ifAllOf: ['isC'],
-                ifNoneOf: ['xsltHref'],
                 ifKeyIn: ['slotChangeCount',],
             }
         }

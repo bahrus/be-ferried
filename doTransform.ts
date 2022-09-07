@@ -1,21 +1,21 @@
-import {BeFerriedProps, BeFerriedVirtualProps} from './types';
+import {Proxy, VirtualProps} from './types';
 import {scts, xsltLookup, remove} from './be-ferried.js';
 
 
-export async function doTransform(self: BeFerriedProps, target: HTMLSlotElement){
-    const {xsltHref, parametersVal, removeLightChildrenVal} = self;
+export async function doTransform(proxy: Proxy, target: HTMLSlotElement){
+    const {xsltHref, parametersVal, removeLightChildrenVal} = proxy;
     const assignedNodes = target.assignedNodes();
     if(assignedNodes.length === 0) return;
-    let xsltProcessor = xsltLookup[xsltHref];
+    let xsltProcessor = xsltLookup[xsltHref!];
     if(xsltProcessor === undefined){
-        xsltLookup[xsltHref] = 'loading';
-        const xslt = await fetch(xsltHref).then(r => r.text());
+        xsltLookup[xsltHref!] = 'loading';
+        const xslt = await fetch(xsltHref!).then(r => r.text());
         xsltProcessor = new XSLTProcessor();
         xsltProcessor.importStylesheet(new DOMParser().parseFromString(xslt, 'text/xml'));
-        xsltLookup[xsltHref] = xsltProcessor;
+        xsltLookup[xsltHref!] = xsltProcessor;
     }
     if(xsltProcessor === 'loading') {
-        setTimeout(() => doTransform(self, target), 100);
+        setTimeout(() => doTransform(proxy, target), 100);
         return;
     }
     target.classList.add('being-ferried');

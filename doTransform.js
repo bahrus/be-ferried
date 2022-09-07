@@ -1,6 +1,6 @@
 import { scts, xsltLookup, remove } from './be-ferried.js';
-export async function doTransform(self, target) {
-    const { xsltHref, parametersVal, removeLightChildrenVal } = self;
+export async function doTransform(proxy, target) {
+    const { xsltHref, parametersVal, removeLightChildrenVal } = proxy;
     const assignedNodes = target.assignedNodes();
     if (assignedNodes.length === 0)
         return;
@@ -13,7 +13,7 @@ export async function doTransform(self, target) {
         xsltLookup[xsltHref] = xsltProcessor;
     }
     if (xsltProcessor === 'loading') {
-        setTimeout(() => doTransform(self, target), 100);
+        setTimeout(() => doTransform(proxy, target), 100);
         return;
     }
     target.classList.add('being-ferried');

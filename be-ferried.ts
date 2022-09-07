@@ -1,47 +1,50 @@
 import {define, BeDecoratedProps} from 'be-decorated/be-decorated.js';
-import {BeFerriedActions, BeFerriedProps, BeFerriedVirtualProps} from './types';
+import {Actions, PP, Proxy, VirtualProps} from './types';
 import {register} from 'be-hive/register.js';
 
 export const xsltLookup: {[key: string]: XSLTProcessor | 'loading'} = {};
 export const scts = ['area', 'base', 'br', 'col', 'embed', 'hr', 'img', 'input', 'keygen', 'link', 'meta', 'param', 'source', 'track', 'wbr'];
 export const remove = ['script', 'noscript'];
 
-export class BeFerriedController implements BeFerriedActions{
-    #target!: HTMLSlotElement;
-    intro(proxy: HTMLSlotElement & BeFerriedVirtualProps, target: HTMLSlotElement, beDecor: BeDecoratedProps){
-        this.#target = target;
-        target.addEventListener('slotchange', this.handleSlotChange);
+export class BeFerriedController implements Actions{
+    #abortController: AbortController | undefined;
+    intro(proxy: Proxy, target: HTMLSlotElement, beDecor: BeDecoratedProps){
+        this.#abortController = new AbortController();
+        target.addEventListener('slotchange', e => {
+            this.handleSlotChange(proxy);
+        }, {
+            signal: this.#abortController.signal,
+        });
         
     }
-    async finale(proxy: HTMLSlotElement & BeFerriedVirtualProps, target: HTMLSlotElement, beDecor: BeDecoratedProps){
-        this.#target.removeEventListener('slotchange', this.handleSlotChange);
+    async finale(proxy: Proxy, target: HTMLSlotElement, beDecor: BeDecoratedProps){
         const {unsubscribe} = await import('trans-render/lib/subscribe.js');
         unsubscribe(proxy);
     }
-    handleSlotChange = (e: Event) => {
-        this.proxy.slotChangeCount++;
-        //this.transform(this);
+    handleSlotChange(proxy: Proxy) {
+        proxy.slotChangeCount++;
     }
 
-    async onXSLT({xslt, proxy}: this){
+    async onXSLT({xslt, proxy}: PP){
         const {hookUp} = await import('be-observant/hookUp.js');
         hookUp(xslt, proxy, 'xsltHref');    
     }
 
-    async onParameters({parameters, proxy}: this){
+    async onParameters({parameters, proxy}: PP){
         const {hookUp} = await import('be-observant/hookUp.js');
         hookUp(parameters, proxy, 'parametersVal');
     }
 
-    async onRemoveLightChildren({removeLightChildren, proxy}: this){
+    async onRemoveLightChildren({removeLightChildren, proxy}: PP){
         const {hookUp} = await import('be-observant/hookUp.js');
         hookUp(removeLightChildren, proxy, 'removeLightChildrenVal');
     }
 
-    ferryUnaltered({}: this){
-        const assignedNodes = this.#target.assignedNodes();
+    ferryUnaltered({self, xsltHref}: PP){
+        if(!xsltHref) return;
+        const assignedNodes = self.assignedNodes();
         if(assignedNodes.length === 0) return;
-        const ns = this.#target.nextElementSibling!;
+        const ns = self.nextElementSibling!;
         ns.innerHTML = '';
         assignedNodes.forEach(el => {
             switch(el.nodeType){
@@ -54,13 +57,12 @@ export class BeFerriedController implements BeFerriedActions{
         });
     }
 
-    async transform({xsltHref, parametersVal}: this){
+    async transform({xsltHref, parametersVal, self}: PP){
         const {doTransform} = await import('./doTransform.js');
-        doTransform(this, this.#target);
+        doTransform(this, self);
     }
 }
 
-export interface BeFerriedController extends BeFerriedProps{}
 
 const tagName = 'be-ferried';
 
@@ -69,7 +71,7 @@ const ifWantsToBe = 'ferried';
 const upgrade = 'slot';
 
 
-define<BeFerriedProps & BeDecoratedProps<BeFerriedProps, BeFerriedActions>, BeFerriedActions>({
+define<Proxy & BeDecoratedProps<Proxy, Actions>, Actions>({
     config:{
         tagName,
         propDefaults:{
@@ -94,7 +96,6 @@ define<BeFerriedProps & BeDecoratedProps<BeFerriedProps, BeFerriedActions>, BeFe
             },
             ferryUnaltered: {
                 ifAllOf: ['isC'],
-                ifNoneOf: ['xsltHref'],
                 ifKeyIn: ['slotChangeCount',],
             }
         }
