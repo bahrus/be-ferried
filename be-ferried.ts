@@ -27,17 +27,17 @@ export class BeFerriedController implements Actions{
 
     async onXSLT({xslt, proxy}: PP){
         const {hookUp} = await import('be-observant/hookUp.js');
-        hookUp(xslt, proxy, 'xsltHref');    
+        hookUp(xslt!, proxy, 'xsltHref');    
     }
 
     async onParameters({parameters, proxy}: PP){
         const {hookUp} = await import('be-observant/hookUp.js');
-        hookUp(parameters, proxy, 'parametersVal');
+        hookUp(parameters!, proxy, 'parametersVal');
     }
 
     async onRemoveLightChildren({removeLightChildren, proxy}: PP){
         const {hookUp} = await import('be-observant/hookUp.js');
-        hookUp(removeLightChildren, proxy, 'removeLightChildrenVal');
+        hookUp(removeLightChildren!, proxy, 'removeLightChildrenVal');
     }
 
     ferryUnaltered({self, xsltHref}: PP){
@@ -57,9 +57,9 @@ export class BeFerriedController implements Actions{
         });
     }
 
-    async transform({xsltHref, parametersVal, self}: PP){
+    async transform({xsltHref, parametersVal, self, proxy}: PP){
         const {doTransform} = await import('./doTransform.js');
-        doTransform(this, self);
+        doTransform(proxy, self);
     }
 }
 

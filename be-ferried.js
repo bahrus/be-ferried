@@ -50,9 +50,9 @@ export class BeFerriedController {
             }
         });
     }
-    async transform({ xsltHref, parametersVal, self }) {
+    async transform({ xsltHref, parametersVal, self, proxy }) {
         const { doTransform } = await import('./doTransform.js');
-        doTransform(this, self);
+        doTransform(proxy, self);
     }
 }
 const tagName = 'be-ferried';
