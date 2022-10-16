@@ -2,7 +2,19 @@
 
 Ferry a replica of the light children DOM into the underworld of Shadow DOM.
 
-Attribute-based equivalent of [slot-bot](https://github.com/bahrus/slot-bot), with additional features.
+[![Playwright Tests](https://github.com/bahrus/be-ferried/actions/workflows/CI.yml/badge.svg?branch=baseline)](https://github.com/bahrus/be-ferried/actions/workflows/CI.yml)
+
+<a href="https://nodei.co/npm/be-ferried/"><img src="https://nodei.co/npm/be-ferried.png"></a>
+
+Size of package, including custom element behavior framework (be-decorated):
+
+[![How big is this package in your project?](https://img.shields.io/bundlephobia/minzip/be-ferried?style=for-the-badge)](https://bundlephobia.com/result?p=be-ferried)
+
+Size of new code in this package:
+
+<img src="http://img.badgesize.io/https://cdn.jsdelivr.net/npm/be-ferried?compression=gzip">
+
+*be-ferried* is an attribute-based equivalent of [slot-bot](https://github.com/bahrus/slot-bot), with additional features.
 
 be-ferried also shares significantly overlapping functionality with [be-metamorphic](https://github.com/bahrus/be-metamorphic). The differences are a bit subtle, and are discussed below.
 
@@ -92,5 +104,29 @@ The three settings, xsltHref, removeLightChildrenVal, and parametersVal (where p
         <td>JSON object of parameters to pass to the XSLT processor</td>
         <td>parameters</td>
     </tr>
-</table>       
+</table>  
+
+## Viewing Locally
+
+1.  Install git.
+2.  Fork/clone this repo.
+3.  Install node.
+4.  Open command window to folder where you cloned this repo.
+5.  > npm install
+6.  > npm run serve
+7.  Open http://localhost:3030/demo/dev in a modern browser.
+
+## Importing in ES Modules:
+
+```JavaScript
+import 'be-ferried/be-ferried.js';
+```
+
+## Using from CDN:
+
+```html
+<script type=module crossorigin=anonymous>
+    import 'https://esm.run/be-ferried';
+</script>
+```
 

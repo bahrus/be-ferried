@@ -1,4 +1,4 @@
-import { define } from 'be-decorated/be-decorated.js';
+import { define } from 'be-decorated/DE.js';
 import { register } from 'be-hive/register.js';
 export const xsltLookup = {};
 export const scts = ['area', 'base', 'br', 'col', 'embed', 'hr', 'img', 'input', 'keygen', 'link', 'meta', 'param', 'source', 'track', 'wbr'];

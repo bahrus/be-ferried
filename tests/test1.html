@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+
+    <k-fetch href="https://cf-sw.bahrus.workers.dev/?href=https://cdn.skypack.dev/@shoelace-style/shoelace/dist/custom-elements.json&embedded=true" as=html target=div></k-fetch>
+    <div>
+        <template shadowroot=open>
+            <style>
+                slot[is-ferried]{
+                    display: none;
+                }
+            </style>
+            <slot be-ferried='{
+                "xsltHref": "transform.xslt",
+                "removeLightChildren": true
+            }'></slot>
+            <div></div>
+            <be-hive></be-hive>
+        </template>
+    </div>
+
+    <script type=importmap>
+        {
+            "imports": {
+                "trans-render/": "../node_modules/trans-render/",
+                "xtal-element/": "../node_modules/xtal-element/",
+                "be-decorated/": "../node_modules/be-decorated/",
+                "be-observant/": "../node_modules/be-observant/",
+                "k-fetch/": "../node_modules/k-fetch/",
+                "on-to-me/": "../node_modules/on-to-me/",
+                "be-hive/": "../node_modules/be-hive/"
+            }
+        }
+    </script>
+    <script type=module>
+        import 'k-fetch/k-fetch.js';
+        import '../be-ferried.js';
+    </script>
+    <div id=target></div>
+    <script>
+        function runScript(){
+            if(document.querySelector('div').shadowRoot.querySelector('h1')){
+                target.setAttribute('mark', 'good');
+            }
+        }
+
+        setTimeout(() => {
+            runScript();
+        }, 2000);
+    </script>
+</body>
+</html>
