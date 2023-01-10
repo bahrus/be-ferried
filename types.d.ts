@@ -1,4 +1,4 @@
-import {BeDecoratedProps, MinimalProxy} from 'be-decorated/types';
+import {BeDecoratedProps, MinimalProxy, EventConfigs} from 'be-decorated/types';
 import {IObserve} from 'be-observant/types';
 
 export interface EndUserProps{
@@ -8,6 +8,8 @@ export interface EndUserProps{
     parametersVal?: XSLTParameter[];
     removeLightChildren?: string | IObserve;
     removeLightChildrenVal?: boolean;
+    transformCompleteCss?: string;
+    transformInProgressCss?: string;
 }
 export interface VirtualProps extends EndUserProps, MinimalProxy<HTMLSlotElement>{
     isC: boolean;
@@ -28,11 +30,17 @@ export interface ProxyProps extends VirtualProps{
 
 export type PP = ProxyProps;
 
+export type PPP = Partial<ProxyProps>;
+
+export type PPE = [Partial<PP>, EventConfigs<Proxy, Actions>];
+
 export interface Actions{
-    intro(proxy: Proxy, target: HTMLSlotElement, beDecor: BeDecoratedProps): void;
+    hydrate(pp: PP): PPE;
+    handleSlotChange(pp: PP): PPP;
+    //intro(proxy: Proxy, target: HTMLSlotElement, beDecor: BeDecoratedProps): void;
     finale(proxy: Proxy, target: HTMLSlotElement, beDecor: BeDecoratedProps): void;
     transform(pp: PP): void;
-    ferryUnaltered(pp: PP): void;
+    ferryUnaltered(pp: PP): PP | void;
     onXSLT(pp: PP): void;
     onParameters(pp: PP): void;
     onRemoveLightChildren(pp: PP): void;

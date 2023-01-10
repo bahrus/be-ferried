@@ -1,28 +1,34 @@
 import {define, BeDecoratedProps} from 'be-decorated/DE.js';
-import {Actions, PP, Proxy, VirtualProps} from './types';
+import {Actions, PP, PPE, Proxy, ProxyProps, VirtualProps} from './types';
 import {register} from 'be-hive/register.js';
 
 export const xsltLookup: {[key: string]: XSLTProcessor | 'loading'} = {};
 export const scts = ['area', 'base', 'br', 'col', 'embed', 'hr', 'img', 'input', 'keygen', 'link', 'meta', 'param', 'source', 'track', 'wbr'];
 export const remove = ['script', 'noscript'];
 
-export class BeFerriedController implements Actions{
-    #abortController: AbortController | undefined;
-    intro(proxy: Proxy, target: HTMLSlotElement, beDecor: BeDecoratedProps){
-        this.#abortController = new AbortController();
-        target.addEventListener('slotchange', e => {
-            this.handleSlotChange(proxy);
-        }, {
-            signal: this.#abortController.signal,
-        });
-        
+export class BeFerried extends EventTarget implements Actions{
+
+    hydrate(pp: PP): PPE {
+        const {self} = pp;
+        return [{},{
+            handleSlotChange: {
+                on: 'slotchange',
+                of: self
+            }
+        }] as PPE;
     }
+
     async finale(proxy: Proxy, target: HTMLSlotElement, beDecor: BeDecoratedProps){
         const {unsubscribe} = await import('trans-render/lib/subscribe.js');
         unsubscribe(proxy);
     }
-    handleSlotChange(proxy: Proxy) {
-        proxy.slotChangeCount++;
+
+
+    handleSlotChange(pp: PP): Partial<ProxyProps> {
+        const {slotChangeCount} = pp;
+        return {
+            slotChangeCount: slotChangeCount + 1
+        };
     }
 
     async onXSLT({xslt, proxy}: PP){
@@ -55,6 +61,9 @@ export class BeFerriedController implements Actions{
                     break;
             }
         });
+        return {
+            resolved: true,
+        } as PP
     }
 
     async transform({xsltHref, parametersVal, self, proxy}: PP){
@@ -77,13 +86,12 @@ define<Proxy & BeDecoratedProps<Proxy, Actions>, Actions>({
         propDefaults:{
             ifWantsToBe,
             upgrade,
-            intro: 'intro',
             finale: 'finale',
             virtualProps: ['xslt', 'isC', 'xsltHref', 'removeLightChildren',  'removeLightChildrenVal', 'parameters', 'parametersVal'],
             proxyPropDefaults:{
-                isC: true,
                 slotChangeCount: 0,
                 removeLightChildrenVal: false,
+                isC: true,
             }
         },
         actions:{
@@ -96,12 +104,13 @@ define<Proxy & BeDecoratedProps<Proxy, Actions>, Actions>({
             },
             ferryUnaltered: {
                 ifAllOf: ['isC'],
-                ifKeyIn: ['slotChangeCount',],
+                ifNoneOf: ['xslt', 'xsltHref'],
+                ifKeyIn: ['slotChangeCount'],
             }
         }
     },
     complexPropDefaults:{
-        controller:BeFerriedController
+        controller:BeFerried
     }
 });
 

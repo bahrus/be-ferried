@@ -18,11 +18,11 @@ Size of new code in this package:
 
 be-ferried also shares significantly overlapping functionality with [be-metamorphic](https://github.com/bahrus/be-metamorphic). The differences are a bit subtle, and are discussed below.
 
-As with be-metamorphic, one use case be-ferried focuses on is the scenario where we want to quickly display a large amount of server-rendered HTML, where we can live with the initial content applying out-of-the-box formatting based on native semantic elements (perhaps with a style tag or two), for optimum First Content Paint. Then once a design library such as UI5, or FAST, or Shoelace, or Carbon Design Web Components, or whatever, is downloaded, replace the native semantic elements with corresponding UI5 elements (for example), in order to gain from the enhancements the library provides over the native elements.
+As with be-metamorphic, one use case be-ferried focuses on is the scenario where we want to quickly display a large amount of server-rendered HTML, where we can live with the initial content applying out-of-the-box formatting based on native semantic elements (perhaps with a [transient](https://github.com/bahrus/be-evanescent) style tag or two), for optimal First Content Paint. Then, once a design library such as UI5, or FAST, or Shoelace, or Carbon Design Web Components, or whatever, is downloaded, replace the native semantic elements with corresponding UI5 elements (for example), in order to gain from the enhancements the library provides over the native elements.
 
-The major difference between be-ferried and be-metamorphic is that be-ferried is expected to be used as a helper behavior for a traditional Shadow DOM-based web component.  A web component where the referenced dependencies can be loaded in a standard way (but dynamic imports somewhat defeats the purpose). [bra-ket](https://github.com/bahrus/bra-ket) is a web component that leverages be-ferried in this way.
+The major difference between be-ferried and be-metamorphic is that be-ferried is expected to be used as a helper behavior for a traditional Shadow DOM-based web component.  A web component where the referenced dependencies can be loaded in a standard way. [bra-ket](https://github.com/bahrus/bra-ket) is a web component that leverages be-ferried in this way.
 
-Whereas be-metamorphic is not tightly coupled to Shadow DOM functionality, and works well with (outside) code loading references dynamically via import('path/to/web-components').  It is a bit more work to configure, however.
+Whereas be-metamorphic is not tightly coupled to Shadow DOM functionality, and is a bit more work to configure.
 
 Anyway...
 
