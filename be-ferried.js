@@ -35,13 +35,15 @@ export class BeFerried extends EventTarget {
         const { hookUp } = await import('be-observant/hookUp.js');
         hookUp(removeLightChildren, proxy, 'removeLightChildrenVal');
     }
-    ferryUnaltered({ self, xsltHref, ferryCompleteCss }) {
+    ferryUnaltered({ self, xsltHref, ferryCompleteCss, target }) {
         if (!xsltHref)
             return;
         const assignedNodes = self.assignedNodes();
         if (assignedNodes.length === 0)
             return;
-        const ns = self.nextElementSibling;
+        const ns = self[target];
+        if (ns === null)
+            throw 'beFerr.404'; //TODO:  retry?
         ns.innerHTML = '';
         assignedNodes.forEach(el => {
             switch (el.nodeType) {
@@ -74,14 +76,15 @@ define({
             finale: 'finale',
             virtualProps: [
                 'xslt', 'isC', 'xsltHref', 'removeLightChildren', 'removeLightChildrenVal',
-                'parameters', 'parametersVal', 'ferryCompleteCss', 'ferryInProgressCss'
+                'parameters', 'parametersVal', 'ferryCompleteCss', 'ferryInProgressCss', 'target'
             ],
             proxyPropDefaults: {
                 slotChangeCount: 0,
                 removeLightChildrenVal: false,
                 isC: true,
                 ferryInProgressCss: 'being-ferried',
-                ferryCompleteCss: 'ferry-complete'
+                ferryCompleteCss: 'ferry-complete',
+                target: 'nextElementSibling',
             }
         },
         actions: {
