@@ -41,7 +41,7 @@ Other use cases for be-ferried include:
 <div>
     <template shadowroot=open>
         <style>
-            slot[is-ferried]{
+            slot.has-been-ferried{
                 display: none;
             }
         </style>
@@ -54,11 +54,11 @@ Other use cases for be-ferried include:
 </div>
 ```
 
-Makes a copy of the light children of the element and inserts them into the next sibling in the Shadow DOM, after applying the transform specified by transform transform.xslt.
+Makes a copy of the light children of the element and inserts them into the next sibling of the adorned slot element in the Shadow DOM, after applying the transform specified by transform transform.xslt.
 
 Specifying an xslt transform is optional.
 
-By default, the light children are left in place.  To remove them, set the `removeLightChildrenVal` attribute to `true`:
+By default, the light children are left in place.  To remove them, set the `removeLightChildrenVal` property to `true`:
 
 ```html
 <k-fetch href="https://cf-sw.bahrus.workers.dev/?href=https://cdn.skypack.dev/@shoelace-style/shoelace/dist/custom-elements.json&embedded=true" as=html target=div></k-fetch>
@@ -77,6 +77,40 @@ By default, the light children are left in place.  To remove them, set the `remo
         <be-hive></be-hive>
     </template>
 </div>
+```
+
+## Security [TODO]
+
+Since we are using an attribute to specify a url, which may contain script files in it, the path specified by the xsltHref needs to satisfy a rudimentary check against either an import map:
+
+```html
+<head>
+    <script type=importmap>
+    {
+        "imports": {
+            "transform.xslt": "https://example.com/transform.xslt"
+        }
+    }
+    </script>
+</head>
+
+...
+<slot be-ferried='{
+    "xsltHref": "transform.xslt"
+}'></slot>
+```
+
+and/or a link preload tag:
+
+```html
+<head>
+    <link rel=preload as=fetch id=transform.xslt href=https://example.com/transform.xslt>
+</head>
+
+...
+<slot be-ferried='{
+    "xsltHref": "transform.xslt"
+}'></slot>
 ```
 
 ## Dynamic config settings.
