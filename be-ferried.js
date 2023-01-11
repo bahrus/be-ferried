@@ -3,22 +3,25 @@ import { register } from 'be-hive/register.js';
 export const xsltLookup = {};
 export const scts = ['area', 'base', 'br', 'col', 'embed', 'hr', 'img', 'input', 'keygen', 'link', 'meta', 'param', 'source', 'track', 'wbr'];
 export const remove = ['script', 'noscript'];
-export class BeFerriedController {
-    #abortController;
-    intro(proxy, target, beDecor) {
-        this.#abortController = new AbortController();
-        target.addEventListener('slotchange', e => {
-            this.handleSlotChange(proxy);
-        }, {
-            signal: this.#abortController.signal,
-        });
+export class BeFerried extends EventTarget {
+    hydrate(pp) {
+        const { self } = pp;
+        return [{}, {
+                handleSlotChange: {
+                    on: 'slotchange',
+                    of: self
+                }
+            }];
     }
     async finale(proxy, target, beDecor) {
         const { unsubscribe } = await import('trans-render/lib/subscribe.js');
         unsubscribe(proxy);
     }
-    handleSlotChange(proxy) {
-        proxy.slotChangeCount++;
+    handleSlotChange(pp) {
+        const { slotChangeCount } = pp;
+        return {
+            slotChangeCount: slotChangeCount + 1
+        };
     }
     async onXSLT({ xslt, proxy }) {
         const { hookUp } = await import('be-observant/hookUp.js');
@@ -32,7 +35,7 @@ export class BeFerriedController {
         const { hookUp } = await import('be-observant/hookUp.js');
         hookUp(removeLightChildren, proxy, 'removeLightChildrenVal');
     }
-    ferryUnaltered({ self, xsltHref }) {
+    ferryUnaltered({ self, xsltHref, ferryCompleteCss }) {
         if (!xsltHref)
             return;
         const assignedNodes = self.assignedNodes();
@@ -49,10 +52,14 @@ export class BeFerriedController {
                     break;
             }
         });
+        self.classList.add(ferryCompleteCss);
+        return {
+            resolved: true,
+        };
     }
-    async transform({ xsltHref, parametersVal, self, proxy }) {
+    async transform(pp) {
         const { doTransform } = await import('./doTransform.js');
-        doTransform(proxy, self);
+        doTransform(pp);
     }
 }
 const tagName = 'be-ferried';
@@ -64,16 +71,21 @@ define({
         propDefaults: {
             ifWantsToBe,
             upgrade,
-            intro: 'intro',
             finale: 'finale',
-            virtualProps: ['xslt', 'isC', 'xsltHref', 'removeLightChildren', 'removeLightChildrenVal', 'parameters', 'parametersVal'],
+            virtualProps: [
+                'xslt', 'isC', 'xsltHref', 'removeLightChildren', 'removeLightChildrenVal',
+                'parameters', 'parametersVal', 'ferryCompleteCss', 'ferryInProgressCss'
+            ],
             proxyPropDefaults: {
-                isC: true,
                 slotChangeCount: 0,
                 removeLightChildrenVal: false,
+                isC: true,
+                ferryInProgressCss: 'being-ferried',
+                ferryCompleteCss: 'ferry-complete'
             }
         },
         actions: {
+            hydrate: 'isC',
             onXSLT: {
                 ifAllOf: ['xslt'],
             },
@@ -83,12 +95,13 @@ define({
             },
             ferryUnaltered: {
                 ifAllOf: ['isC'],
-                ifKeyIn: ['slotChangeCount',],
+                ifNoneOf: ['xslt', 'xsltHref'],
+                ifKeyIn: ['slotChangeCount'],
             }
         }
     },
     complexPropDefaults: {
-        controller: BeFerriedController
+        controller: BeFerried
     }
 });
 register(ifWantsToBe, upgrade, tagName);

@@ -1,23 +1,25 @@
 import { scts, xsltLookup, remove } from './be-ferried.js';
-export async function doTransform(proxy, target) {
-    const { xsltHref, parametersVal, removeLightChildrenVal } = proxy;
-    const assignedNodes = target.assignedNodes();
+export async function doTransform(pp) {
+    const { xsltHref, parametersVal, removeLightChildrenVal, self, ferryInProgressCss, proxy, ferryCompleteCss } = pp;
+    const assignedNodes = self.assignedNodes();
     if (assignedNodes.length === 0)
         return;
     let xsltProcessor = xsltLookup[xsltHref];
     if (xsltProcessor === undefined) {
         xsltLookup[xsltHref] = 'loading';
+        const { resolve } = await import('trans-render/lib/resolve.js');
+        const mappedPath = resolve(xsltHref);
         const xslt = await fetch(xsltHref).then(r => r.text());
         xsltProcessor = new XSLTProcessor();
         xsltProcessor.importStylesheet(new DOMParser().parseFromString(xslt, 'text/xml'));
         xsltLookup[xsltHref] = xsltProcessor;
     }
     if (xsltProcessor === 'loading') {
-        setTimeout(() => doTransform(proxy, target), 100);
+        setTimeout(() => doTransform(pp), 100);
         return;
     }
-    target.classList.add('being-ferried');
-    const ns = target.nextElementSibling;
+    self.classList.add(ferryInProgressCss);
+    const ns = self.nextElementSibling;
     const div = document.createElement('div');
     let nonTrivial = false;
     let hasTemplate = false;
@@ -45,8 +47,10 @@ export async function doTransform(proxy, target) {
                 break;
         }
     });
-    if (!nonTrivial)
+    if (!nonTrivial) {
+        self.classList.remove(ferryInProgressCss);
         return;
+    }
     ns.innerHTML = '';
     xsltProcessor.clearParameters();
     if (parametersVal !== undefined) {
@@ -69,11 +73,13 @@ export async function doTransform(proxy, target) {
     else {
         ns.appendChild(resultDocument);
     }
+    self.classList.add(ferryCompleteCss);
     if (removeLightChildrenVal) {
-        const slotName = target.getAttribute('name');
-        const rn = target.getRootNode().host;
+        const slotName = self.getAttribute('name');
+        const rn = self.getRootNode().host;
         const elementToClear = (slotName === null ? rn : rn.querySelector(`slot[name="${slotName}"]`));
         elementToClear.innerHTML = '';
     }
-    target.classList.remove('being-ferried');
+    self.classList.remove(ferryInProgressCss);
+    proxy.resolved = true;
 }

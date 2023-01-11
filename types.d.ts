@@ -8,8 +8,8 @@ export interface EndUserProps{
     parametersVal?: XSLTParameter[];
     removeLightChildren?: string | IObserve;
     removeLightChildrenVal?: boolean;
-    transformCompleteCss?: string;
-    transformInProgressCss?: string;
+    ferryCompleteCss?: string;
+    ferryInProgressCss?: string;
 }
 export interface VirtualProps extends EndUserProps, MinimalProxy<HTMLSlotElement>{
     isC: boolean;

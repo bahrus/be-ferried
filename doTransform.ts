@@ -1,25 +1,27 @@
-import {Proxy, VirtualProps} from './types';
+import {Proxy, VirtualProps, PP, PPP} from './types';
 import {scts, xsltLookup, remove} from './be-ferried.js';
 
 
-export async function doTransform(proxy: Proxy, target: HTMLSlotElement){
-    const {xsltHref, parametersVal, removeLightChildrenVal} = proxy;
-    const assignedNodes = target.assignedNodes();
+export async function doTransform(pp: PP){
+    const {xsltHref, parametersVal, removeLightChildrenVal, self, ferryInProgressCss, proxy, ferryCompleteCss} = pp;
+    const assignedNodes = self.assignedNodes();
     if(assignedNodes.length === 0) return;
     let xsltProcessor = xsltLookup[xsltHref!];
     if(xsltProcessor === undefined){
         xsltLookup[xsltHref!] = 'loading';
+        const {resolve} = await import('trans-render/lib/resolve.js');
+        const mappedPath = resolve(xsltHref!);
         const xslt = await fetch(xsltHref!).then(r => r.text());
         xsltProcessor = new XSLTProcessor();
         xsltProcessor.importStylesheet(new DOMParser().parseFromString(xslt, 'text/xml'));
         xsltLookup[xsltHref!] = xsltProcessor;
     }
     if(xsltProcessor === 'loading') {
-        setTimeout(() => doTransform(proxy, target), 100);
+        setTimeout(() => doTransform(pp), 100);
         return;
     }
-    target.classList.add('being-ferried');
-    const ns = target.nextElementSibling as HTMLElement;
+    self.classList.add(ferryInProgressCss!);
+    const ns = self.nextElementSibling as HTMLElement;
     const div = document.createElement('div');
     let nonTrivial = false;
     let hasTemplate = false;
@@ -47,7 +49,10 @@ export async function doTransform(proxy: Proxy, target: HTMLSlotElement){
                 break;
         }
     });
-    if(!nonTrivial) return;
+    if(!nonTrivial){
+        self.classList.remove(ferryInProgressCss!);
+        return;
+    } 
     ns.innerHTML = ''; 
 
     xsltProcessor.clearParameters();
@@ -61,6 +66,7 @@ export async function doTransform(proxy: Proxy, target: HTMLSlotElement){
     if(xsltProcessor !== undefined){
         resultDocument = xsltProcessor.transformToFragment(div, document);
     }
+
     if(hasTemplate){
         const arr = resultDocument.children;
         const h: string[] = [];
@@ -71,12 +77,15 @@ export async function doTransform(proxy: Proxy, target: HTMLSlotElement){
     }else{
         ns.appendChild(resultDocument);
     }
-
+    self.classList.add(ferryCompleteCss!);
     if(removeLightChildrenVal){
-        const slotName = target.getAttribute('name');
-        const rn = (<any>target.getRootNode()).host as Element;
+        const slotName = self.getAttribute('name');
+        const rn = (<any>self.getRootNode()).host as Element;
         const elementToClear = (slotName === null ? rn : rn.querySelector(`slot[name="${slotName}"]`)) as Element;
         elementToClear.innerHTML = '';
     }
-    target.classList.remove('being-ferried');
+    self.classList.remove(ferryInProgressCss!);
+    
+    proxy.resolved = true;
+
 }

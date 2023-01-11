@@ -46,7 +46,7 @@ export class BeFerried extends EventTarget implements Actions{
         hookUp(removeLightChildren!, proxy, 'removeLightChildrenVal');
     }
 
-    ferryUnaltered({self, xsltHref}: PP){
+    ferryUnaltered({self, xsltHref, ferryCompleteCss}: PP){
         if(!xsltHref) return;
         const assignedNodes = self.assignedNodes();
         if(assignedNodes.length === 0) return;
@@ -61,14 +61,15 @@ export class BeFerried extends EventTarget implements Actions{
                     break;
             }
         });
+        self.classList.add(ferryCompleteCss!);
         return {
             resolved: true,
-        } as PP
+        } as PP;
     }
 
-    async transform({xsltHref, parametersVal, self, proxy}: PP){
+    async transform(pp: PP){
         const {doTransform} = await import('./doTransform.js');
-        doTransform(proxy, self);
+        doTransform(pp);
     }
 }
 
@@ -87,14 +88,20 @@ define<Proxy & BeDecoratedProps<Proxy, Actions>, Actions>({
             ifWantsToBe,
             upgrade,
             finale: 'finale',
-            virtualProps: ['xslt', 'isC', 'xsltHref', 'removeLightChildren',  'removeLightChildrenVal', 'parameters', 'parametersVal'],
+            virtualProps: [
+                'xslt', 'isC', 'xsltHref', 'removeLightChildren',  'removeLightChildrenVal', 
+                'parameters', 'parametersVal', 'ferryCompleteCss', 'ferryInProgressCss'
+            ],
             proxyPropDefaults:{
                 slotChangeCount: 0,
                 removeLightChildrenVal: false,
                 isC: true,
+                ferryInProgressCss: 'being-ferried',
+                ferryCompleteCss: 'ferry-complete'
             }
         },
         actions:{
+            hydrate: 'isC',
             onXSLT: {
                 ifAllOf: ['xslt'],
             },
