@@ -79,9 +79,9 @@ By default, the light children are left in place.  To remove them, set the `remo
 </div>
 ```
 
-## Security [TODO]
+## Security
 
-Since we are using an attribute to specify a url, which may contain script files in it, the path specified by the xsltHref needs to satisfy a rudimentary check against either an import map:
+Since we are using an attribute to (optionally) specify a url, which may contain script tags in it, the path specified by the xsltHref needs to satisfy a rudimentary check against either an import map:
 
 ```html
 <head>
