@@ -1,5 +1,5 @@
 import {Proxy, VirtualProps, PP, PPP} from './types';
-import {scts, xsltLookup, remove} from './be-ferried.js';
+import {xsltLookup, remove} from './be-ferried.js';
 
 
 export async function doTransform(pp: PP){
@@ -25,6 +25,7 @@ export async function doTransform(pp: PP){
     const div = document.createElement('div');
     let nonTrivial = false;
     let hasTemplate = false;
+    const {swap} = await import('trans-render/xslt/swap.js');
     assignedNodes.forEach(el => {
         switch(el.nodeType){
             case 1:
@@ -34,17 +35,18 @@ export async function doTransform(pp: PP){
                     hasTemplate = true;
                 }
                 const clone = (isTemplate ? (el as HTMLTemplateElement).content.cloneNode(true) : el.cloneNode(true)) as DocumentFragment;
-                const problemTags = clone.querySelectorAll(scts.join(','));
-                problemTags.forEach(tag => {
-                    const newTag = document.createElement(tag.localName + '-ish');
-                    for(let i = 0, ii = tag.attributes.length; i < ii; i++){
-                        newTag.setAttribute(tag.attributes[i].name, tag.attributes[i].value);
-                    }
-                    tag.insertAdjacentElement('afterend', newTag);
-                });
-                problemTags.forEach(tag => tag.remove());
-                const forbiddenTags = clone.querySelectorAll(remove.join(','));
-                forbiddenTags.forEach(tag => tag.remove());
+                swap(clone as any as Element, true);
+                // const problemTags = clone.querySelectorAll(scts.join(','));
+                // problemTags.forEach(tag => {
+                //     const newTag = document.createElement(tag.localName + '-ish');
+                //     for(let i = 0, ii = tag.attributes.length; i < ii; i++){
+                //         newTag.setAttribute(tag.attributes[i].name, tag.attributes[i].value);
+                //     }
+                //     tag.insertAdjacentElement('afterend', newTag);
+                // });
+                // problemTags.forEach(tag => tag.remove());
+                // const forbiddenTags = clone.querySelectorAll(remove.join(','));
+                // forbiddenTags.forEach(tag => tag.remove());
                 div.appendChild(clone);
                 break;
         }
@@ -66,7 +68,7 @@ export async function doTransform(pp: PP){
     if(xsltProcessor !== undefined){
         resultDocument = xsltProcessor.transformToFragment(div, document);
     }
-
+    swap(resultDocument as any as Element, false);
     if(hasTemplate){
         const arr = resultDocument.children;
         const h: string[] = [];
