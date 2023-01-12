@@ -10,7 +10,8 @@ export interface EndUserProps{
     removeLightChildrenVal?: boolean;
     ferryCompleteCss?: string;
     ferryInProgressCss?: string;
-    target?: 'nextElementSibling' | 'previousElementSibling'
+    target?: 'nextElementSibling' | 'previousElementSibling',
+    debug?: boolean;
 }
 export interface VirtualProps extends EndUserProps, MinimalProxy<HTMLSlotElement>{
     isC: boolean;

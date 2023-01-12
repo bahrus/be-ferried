@@ -1,7 +1,7 @@
 import { define } from 'be-decorated/DE.js';
 import { register } from 'be-hive/register.js';
 export const xsltLookup = {};
-export const scts = ['area', 'base', 'br', 'col', 'embed', 'hr', 'img', 'input', 'keygen', 'link', 'meta', 'param', 'source', 'track', 'wbr'];
+//export const scts = ['area', 'base', 'br', 'col', 'embed', 'hr', 'img', 'input', 'keygen', 'link', 'meta', 'param', 'source', 'track', 'wbr'];
 export const remove = ['script', 'noscript'];
 export class BeFerried extends EventTarget {
     hydrate(pp) {
@@ -76,12 +76,13 @@ define({
             finale: 'finale',
             virtualProps: [
                 'xslt', 'isC', 'xsltHref', 'removeLightChildren', 'removeLightChildrenVal',
-                'parameters', 'parametersVal', 'ferryCompleteCss', 'ferryInProgressCss', 'target'
+                'parameters', 'parametersVal', 'ferryCompleteCss', 'ferryInProgressCss', 'target', 'debug'
             ],
             proxyPropDefaults: {
                 slotChangeCount: 0,
                 removeLightChildrenVal: false,
                 isC: true,
+                debug: false,
                 ferryInProgressCss: 'being-ferried',
                 ferryCompleteCss: 'ferry-complete',
                 target: 'nextElementSibling',

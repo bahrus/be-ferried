@@ -3,7 +3,7 @@ import {Actions, PP, PPE, Proxy, ProxyProps, VirtualProps} from './types';
 import {register} from 'be-hive/register.js';
 
 export const xsltLookup: {[key: string]: XSLTProcessor | 'loading'} = {};
-export const scts = ['area', 'base', 'br', 'col', 'embed', 'hr', 'img', 'input', 'keygen', 'link', 'meta', 'param', 'source', 'track', 'wbr'];
+//export const scts = ['area', 'base', 'br', 'col', 'embed', 'hr', 'img', 'input', 'keygen', 'link', 'meta', 'param', 'source', 'track', 'wbr'];
 export const remove = ['script', 'noscript'];
 
 export class BeFerried extends EventTarget implements Actions{
@@ -91,12 +91,13 @@ define<Proxy & BeDecoratedProps<Proxy, Actions>, Actions>({
             finale: 'finale',
             virtualProps: [
                 'xslt', 'isC', 'xsltHref', 'removeLightChildren',  'removeLightChildrenVal', 
-                'parameters', 'parametersVal', 'ferryCompleteCss', 'ferryInProgressCss', 'target'
+                'parameters', 'parametersVal', 'ferryCompleteCss', 'ferryInProgressCss', 'target', 'debug'
             ],
             proxyPropDefaults:{
                 slotChangeCount: 0,
                 removeLightChildrenVal: false,
                 isC: true,
+                debug: false,
                 ferryInProgressCss: 'being-ferried',
                 ferryCompleteCss: 'ferry-complete',
                 target: 'nextElementSibling',

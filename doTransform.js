@@ -1,6 +1,6 @@
 import { xsltLookup } from './be-ferried.js';
 export async function doTransform(pp) {
-    const { xsltHref, parametersVal, removeLightChildrenVal, self, ferryInProgressCss, proxy, ferryCompleteCss } = pp;
+    const { xsltHref, parametersVal, removeLightChildrenVal, self, ferryInProgressCss, proxy, ferryCompleteCss, debug } = pp;
     const assignedNodes = self.assignedNodes();
     if (assignedNodes.length === 0)
         return;
@@ -34,17 +34,6 @@ export async function doTransform(pp) {
                 }
                 const clone = (isTemplate ? el.content.cloneNode(true) : el.cloneNode(true));
                 swap(clone, true);
-                // const problemTags = clone.querySelectorAll(scts.join(','));
-                // problemTags.forEach(tag => {
-                //     const newTag = document.createElement(tag.localName + '-ish');
-                //     for(let i = 0, ii = tag.attributes.length; i < ii; i++){
-                //         newTag.setAttribute(tag.attributes[i].name, tag.attributes[i].value);
-                //     }
-                //     tag.insertAdjacentElement('afterend', newTag);
-                // });
-                // problemTags.forEach(tag => tag.remove());
-                // const forbiddenTags = clone.querySelectorAll(remove.join(','));
-                // forbiddenTags.forEach(tag => tag.remove());
                 div.appendChild(clone);
                 break;
         }
@@ -62,6 +51,9 @@ export async function doTransform(pp) {
     }
     let resultDocument = div;
     if (xsltProcessor !== undefined) {
+        if (debug) {
+            console.log({ inputXHTML: div.outerHTML });
+        }
         resultDocument = xsltProcessor.transformToFragment(div, document);
     }
     swap(resultDocument, false);
@@ -75,6 +67,9 @@ export async function doTransform(pp) {
     }
     else {
         ns.appendChild(resultDocument);
+    }
+    if (debug) {
+        console.log({ outputHTML: ns.outerHTML });
     }
     self.classList.add(ferryCompleteCss);
     if (removeLightChildrenVal) {
