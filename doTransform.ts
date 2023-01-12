@@ -11,7 +11,7 @@ export async function doTransform(pp: PP){
         xsltLookup[xsltHref!] = 'loading';
         const {resolve} = await import('trans-render/lib/resolve.js');
         const mappedPath = resolve(xsltHref!);
-        const xslt = await fetch(xsltHref!).then(r => r.text());
+        const xslt = await fetch(mappedPath).then(r => r.text());
         xsltProcessor = new XSLTProcessor();
         xsltProcessor.importStylesheet(new DOMParser().parseFromString(xslt, 'text/xml'));
         xsltLookup[xsltHref!] = xsltProcessor;
