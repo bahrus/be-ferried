@@ -9,7 +9,8 @@ export class BeFerried extends EventTarget {
         return [{}, {
                 handleSlotChange: {
                     on: 'slotchange',
-                    of: self
+                    of: self,
+                    doInit: true,
                 }
             }];
     }
@@ -36,7 +37,7 @@ export class BeFerried extends EventTarget {
         hookUp(removeLightChildren, proxy, 'removeLightChildrenVal');
     }
     ferryUnaltered({ self, xsltHref, ferryCompleteCss, target }) {
-        if (!xsltHref)
+        if (xsltHref)
             return;
         const assignedNodes = self.assignedNodes();
         if (assignedNodes.length === 0)

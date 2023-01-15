@@ -13,7 +13,8 @@ export class BeFerried extends EventTarget implements Actions{
         return [{},{
             handleSlotChange: {
                 on: 'slotchange',
-                of: self
+                of: self,
+                doInit: true,
             }
         }] as PPE;
     }
@@ -47,7 +48,7 @@ export class BeFerried extends EventTarget implements Actions{
     }
 
     ferryUnaltered({self, xsltHref, ferryCompleteCss, target}: PP){
-        if(!xsltHref) return;
+        if(xsltHref) return;
         const assignedNodes = self.assignedNodes();
         if(assignedNodes.length === 0) return;
         const ns = self[target!];
