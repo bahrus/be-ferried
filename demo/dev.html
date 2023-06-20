@@ -10,7 +10,7 @@
 
     <k-fetch href="https://cf-sw.bahrus.workers.dev/?href=https://cdn.skypack.dev/@shoelace-style/shoelace/dist/custom-elements.json&embedded=true" as=html target=div></k-fetch>
     <div>
-        <template shadowroot=open>
+        <template shadowrootmode=open>
             <style>
                 slot[is-ferried]{
                     display: none;
@@ -28,13 +28,11 @@
     <script type=importmap>
         {
             "imports": {
-                "trans-render/": "../node_modules/trans-render/",
-                "xtal-element/": "../node_modules/xtal-element/",
-                "be-decorated/": "../node_modules/be-decorated/",
-                "be-observant/": "../node_modules/be-observant/",
+                "be-enhanced/": "../node_modules/be-enhanced/",
+                "be-hive/": "../node_modules/be-hive/",
                 "k-fetch/": "../node_modules/k-fetch/",
-                "on-to-me/": "../node_modules/on-to-me/",
-                "be-hive/": "../node_modules/be-hive/"
+                "trans-render/": "../node_modules/trans-render/",
+                "xtal-element/": "../node_modules/xtal-element/"
             }
         }
     </script>
