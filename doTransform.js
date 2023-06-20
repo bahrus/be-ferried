@@ -1,7 +1,7 @@
 import { xsltLookup } from './be-ferried.js';
 export async function doTransform(pp) {
-    const { xsltHref, parametersVal, removeLightChildrenVal, self, ferryInProgressCss, proxy, ferryCompleteCss, debug } = pp;
-    const assignedNodes = self.assignedNodes();
+    const { xsltHref, parameters, removeLightChildren, enhancedElement, ferryInProgressCss, ferryCompleteCss, debug } = pp;
+    const assignedNodes = enhancedElement.assignedNodes();
     if (assignedNodes.length === 0)
         return;
     let xsltProcessor = xsltLookup[xsltHref];
@@ -18,8 +18,8 @@ export async function doTransform(pp) {
         setTimeout(() => doTransform(pp), 100);
         return;
     }
-    self.classList.add(ferryInProgressCss);
-    const ns = self.nextElementSibling;
+    enhancedElement.classList.add(ferryInProgressCss);
+    const ns = enhancedElement.nextElementSibling;
     const div = document.createElement('div');
     let nonTrivial = false;
     let hasTemplate = false;
@@ -39,13 +39,13 @@ export async function doTransform(pp) {
         }
     });
     if (!nonTrivial) {
-        self.classList.remove(ferryInProgressCss);
+        enhancedElement.classList.remove(ferryInProgressCss);
         return;
     }
     ns.innerHTML = '';
     xsltProcessor.clearParameters();
-    if (parametersVal !== undefined) {
-        parametersVal.forEach(p => {
+    if (parameters !== undefined) {
+        parameters.forEach(p => {
             xsltProcessor.setParameter(p.namespaceURI, p.localName, p.value);
         });
     }
@@ -71,13 +71,13 @@ export async function doTransform(pp) {
     if (debug) {
         console.log({ outputHTML: ns.outerHTML });
     }
-    self.classList.add(ferryCompleteCss);
-    if (removeLightChildrenVal) {
-        const slotName = self.getAttribute('name');
-        const rn = self.getRootNode().host;
+    enhancedElement.classList.add(ferryCompleteCss);
+    if (removeLightChildren) {
+        const slotName = enhancedElement.getAttribute('name');
+        const rn = enhancedElement.getRootNode().host;
         const elementToClear = (slotName === null ? rn : rn.querySelector(`slot[name="${slotName}"]`));
         elementToClear.innerHTML = '';
     }
-    self.classList.remove(ferryInProgressCss);
-    proxy.resolved = true;
+    enhancedElement.classList.remove(ferryInProgressCss);
+    pp.resolved = true;
 }

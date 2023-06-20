@@ -17,7 +17,7 @@
                 }
             </style>
             <slot be-ferried='{
-                "xsltHref": "transform.xslt",
+                "xsltHref": "be-ferried/transform.xslt",
                 "removeLightChildren": true
             }'></slot>
             <div></div>
@@ -28,14 +28,12 @@
     <script type=importmap>
         {
             "imports": {
-                "trans-render/": "../node_modules/trans-render/",
-                "xtal-element/": "../node_modules/xtal-element/",
-                "be-decorated/": "../node_modules/be-decorated/",
-                "be-observant/": "../node_modules/be-observant/",
-                "k-fetch/": "../node_modules/k-fetch/",
-                "on-to-me/": "../node_modules/on-to-me/",
+                "be-enhanced/": "../node_modules/be-enhanced/",
+                "be-ferried/": "./",
                 "be-hive/": "../node_modules/be-hive/",
-                "transform.xslt": "transform.xslt"
+                "k-fetch/": "../node_modules/k-fetch/",
+                "trans-render/": "../node_modules/trans-render/",
+                "xtal-element/": "../node_modules/xtal-element/"
             }
         }
     </script>
