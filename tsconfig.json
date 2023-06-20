@@ -9,11 +9,9 @@
 		"watch": true
 	},
 	"files": [
-		"be-ferried.ts"
+		"be-ferried2.ts"
 	],
 	"exclude":[
-		"build",
-		"bower_components",
 		"node_modules"
 	]
 
