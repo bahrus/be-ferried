@@ -14,25 +14,23 @@
     "xslt"
   ],
   "files": [
-    "*.*"
+    "*.js",
+    "types.d.ts"
   ],
   "types": "types.d.ts",
   "scripts": {
     "test": "playwright test",
-    "package-check": "package-check",
     "serve": "node node_modules/may-it-serve/serve.js"
   },
   "dependencies": {
-    "be-decorated": "0.0.222",
-    "be-hive": "0.0.79",
-    "be-observant": "0.0.163",
-    "trans-render": "0.0.663"
+    "be-enhanced": "0.0.31",
+    "be-hive": "0.0.107",
+    "trans-render": "0.0.691",
+    "xtal-element": "0.0.569"
   },
   "devDependencies": {
-    "may-it-serve": "0.0.4",
-    "@playwright/test": "1.29.2",
-    "@skypack/package-check": "0.2.2",
-    "@custom-elements-manifest/analyzer": "0.6.4",
+    "@playwright/test": "1.35.0",
+    "may-it-serve": "0.0.5",
     "k-fetch": "0.0.6"
   },
   "repository": {
