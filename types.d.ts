@@ -1,12 +1,12 @@
 import { ActionOnEventConfigs } from "trans-render/froop/types";
 import {IBE} from 'be-enhanced/types';
 
-export interface EndUserProps extends IBE{
+export interface EndUserProps extends IBE<HTMLSlotElement>{
     //xslt?: string | IObserve;
     xsltHref?: string;
-    parameters?: string;// | IObserve;
+    parameters?: XSLTParameter[];// | IObserve;
     //parametersVal?: XSLTParameter[];
-    removeLightChildren?: string; // | IObserve;
+    removeLightChildren?: boolean; // | IObserve;
     //removeLightChildrenVal?: boolean;
     ferryCompleteCss?: string;
     ferryInProgressCss?: string;

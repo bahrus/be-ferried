@@ -1,10 +1,10 @@
-import {Proxy, VirtualProps, PP, PPP} from './types';
+import {AP} from './types';
 import {xsltLookup, remove} from './be-ferried.js';
 
 
-export async function doTransform(pp: PP){
-    const {xsltHref, parametersVal, removeLightChildrenVal, self, ferryInProgressCss, proxy, ferryCompleteCss, debug} = pp;
-    const assignedNodes = self.assignedNodes();
+export async function doTransform(pp: AP){
+    const {xsltHref, parameters, removeLightChildren, enhancedElement, ferryInProgressCss, ferryCompleteCss, debug} = pp;
+    const assignedNodes = enhancedElement.assignedNodes();
     if(assignedNodes.length === 0) return;
     let xsltProcessor = xsltLookup[xsltHref!];
     if(xsltProcessor === undefined){
@@ -20,8 +20,8 @@ export async function doTransform(pp: PP){
         setTimeout(() => doTransform(pp), 100);
         return;
     }
-    self.classList.add(ferryInProgressCss!);
-    const ns = self.nextElementSibling as HTMLElement;
+    enhancedElement.classList.add(ferryInProgressCss!);
+    const ns = enhancedElement.nextElementSibling as HTMLElement;
     const div = document.createElement('div');
     let nonTrivial = false;
     let hasTemplate = false;
@@ -41,14 +41,14 @@ export async function doTransform(pp: PP){
         }
     });
     if(!nonTrivial){
-        self.classList.remove(ferryInProgressCss!);
+        enhancedElement.classList.remove(ferryInProgressCss!);
         return;
     } 
     ns.innerHTML = ''; 
 
     xsltProcessor.clearParameters();
-    if(parametersVal !== undefined){
-        parametersVal.forEach(p => {
+    if(parameters !== undefined){
+        parameters.forEach(p => {
             (xsltProcessor as XSLTProcessor).setParameter(p.namespaceURI!, p.localName, p.value);
         });
     }
@@ -76,15 +76,15 @@ export async function doTransform(pp: PP){
         console.log({outputHTML: ns.outerHTML});
     }
     
-    self.classList.add(ferryCompleteCss!);
-    if(removeLightChildrenVal){
-        const slotName = self.getAttribute('name');
-        const rn = (<any>self.getRootNode()).host as Element;
+    enhancedElement.classList.add(ferryCompleteCss!);
+    if(removeLightChildren){
+        const slotName = enhancedElement.getAttribute('name');
+        const rn = (<any>enhancedElement.getRootNode()).host as Element;
         const elementToClear = (slotName === null ? rn : rn.querySelector(`slot[name="${slotName}"]`)) as Element;
         elementToClear.innerHTML = '';
     }
-    self.classList.remove(ferryInProgressCss!);
+    enhancedElement.classList.remove(ferryInProgressCss!);
     
-    proxy.resolved = true;
+    pp.resolved = true;
 
 }

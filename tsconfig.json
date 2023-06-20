@@ -6,10 +6,9 @@
 		"experimentalDecorators": false,
 		"newLine": "LF",
 		"strict": true,
-		"watch": true
 	},
 	"files": [
-		"be-ferried2.ts"
+		"be-ferried.ts"
 	],
 	"exclude":[
 		"node_modules"
