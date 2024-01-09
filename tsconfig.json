@@ -8,7 +8,7 @@
 		"strict": true,
 	},
 	"files": [
-		"be-ferried.ts"
+		"behivior.ts"
 	],
 	"exclude":[
 		"node_modules"

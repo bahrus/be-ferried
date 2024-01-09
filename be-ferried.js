@@ -1,6 +1,5 @@
 import { BE, propDefaults, propInfo } from 'be-enhanced/BE.js';
 import { XE } from 'xtal-element/XE.js';
-import { register } from 'be-hive/register.js';
 export const xsltLookup = {};
 export const remove = ['script', 'noscript'];
 export class BeFerried extends BE {
@@ -54,9 +53,7 @@ export class BeFerried extends BE {
         };
     }
 }
-const tagName = 'be-ferried';
-const ifWantsToBe = 'ferried';
-const upgrade = '*';
+export const tagName = 'be-ferried';
 const xe = new XE({
     config: {
         tagName,
@@ -88,4 +85,3 @@ const xe = new XE({
     },
     superclass: BeFerried
 });
-register(ifWantsToBe, upgrade, tagName);
